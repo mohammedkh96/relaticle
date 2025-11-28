@@ -1,65 +1,51 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Policies;
 
 use App\Models\Task;
-use App\Models\User;
-use Filament\Facades\Filament;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-final readonly class TaskPolicy
+class TaskPolicy
 {
     use HandlesAuthorization;
 
-    public function viewAny(User $user): bool
+    public function viewAny($user): bool
     {
-        return $user->hasVerifiedEmail() && $user->currentTeam !== null;
+        return true;
     }
 
-    public function view(User $user, Task $task): bool
+    public function view($user, Task $task): bool
     {
-        return $user->belongsToTeam($task->team);
+        return true;
     }
 
-    public function create(User $user): bool
+    public function create($user): bool
     {
-        return $user->hasVerifiedEmail() && $user->currentTeam !== null;
+        return true;
     }
 
-    public function update(User $user, Task $task): bool
+    public function update($user, Task $task): bool
     {
-        return $user->belongsToTeam($task->team);
+        return true;
     }
 
-    public function delete(User $user, Task $task): bool
+    public function delete($user, Task $task): bool
     {
-        return $user->belongsToTeam($task->team);
+        return true;
     }
 
-    public function deleteAny(User $user): bool
+    public function deleteAny($user): bool
     {
-        return $user->hasVerifiedEmail() && $user->currentTeam !== null;
+        return true;
     }
 
-    public function restore(User $user, Task $task): bool
+    public function restore($user, Task $task): bool
     {
-        return $user->belongsToTeam($task->team);
+        return true;
     }
 
-    public function restoreAny(User $user): bool
+    public function forceDelete($user, Task $task): bool
     {
-        return $user->hasVerifiedEmail() && $user->currentTeam !== null;
-    }
-
-    public function forceDelete(User $user, Task $task): bool
-    {
-        return $user->hasTeamRole($task->team, 'admin');
-    }
-
-    public function forceDeleteAny(User $user): bool
-    {
-        return $user->hasTeamRole(Filament::getTenant(), 'admin');
+        return true;
     }
 }

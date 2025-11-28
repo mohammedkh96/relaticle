@@ -2,10 +2,12 @@
 
 namespace App\Policies;
 
-use App\Models\Opportunity;
+use App\Models\Event;
+use App\Models\User;
+use Relaticle\SystemAdmin\Models\SystemAdministrator;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class OpportunityPolicy
+class EventPolicy
 {
     use HandlesAuthorization;
 
@@ -14,7 +16,7 @@ class OpportunityPolicy
         return true;
     }
 
-    public function view($user, Opportunity $opportunity): bool
+    public function view($user, Event $event): bool
     {
         return true;
     }
@@ -24,12 +26,12 @@ class OpportunityPolicy
         return true;
     }
 
-    public function update($user, Opportunity $opportunity): bool
+    public function update($user, Event $event): bool
     {
         return true;
     }
 
-    public function delete($user, Opportunity $opportunity): bool
+    public function delete($user, Event $event): bool
     {
         return true;
     }
@@ -39,12 +41,12 @@ class OpportunityPolicy
         return true;
     }
 
-    public function restore($user, Opportunity $opportunity): bool
+    public function restore($user, Event $event): bool
     {
         return true;
     }
 
-    public function forceDelete($user, Opportunity $opportunity): bool
+    public function forceDelete($user, Event $event): bool
     {
         return true;
     }

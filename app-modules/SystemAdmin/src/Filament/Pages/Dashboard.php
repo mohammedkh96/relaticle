@@ -11,9 +11,9 @@ final class Dashboard extends BaseDashboard
 {
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-home';
 
-    protected ?string $heading = 'Dashboard';
+    protected ?string $heading = 'Invest Expo CRM Dashboard';
 
-    protected ?string $subheading = 'Welcome to Relaticle Admin | See your stats and manage your content.';
+    protected ?string $subheading = 'Manage your events, companies, participations, and visitors.';
 
     protected static ?string $navigationLabel = 'Dashboard';
 
@@ -26,6 +26,13 @@ final class Dashboard extends BaseDashboard
                 ->icon('heroicon-o-globe-alt')
                 ->color('gray')
                 ->openUrlInNewTab(),
+        ];
+    }
+
+    public function getWidgets(): array
+    {
+        return [
+            \Relaticle\SystemAdmin\Filament\Widgets\DashboardStatsWidget::class,
         ];
     }
 }

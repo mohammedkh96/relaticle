@@ -59,6 +59,10 @@ final class CompanyResource extends Resource
                 TextInput::make('address')
                     ->required()
                     ->maxLength(255),
+                TextInput::make('country')
+                    ->maxLength(255),
+                TextInput::make('city')
+                    ->maxLength(255),
                 TextInput::make('phone')
                     ->tel()
                     ->required()
@@ -83,11 +87,17 @@ final class CompanyResource extends Resource
                     ->searchable(),
                 TextColumn::make('address')
                     ->searchable(),
+                TextColumn::make('country')
+                    ->searchable()
+                    ->toggleable(),
+                TextColumn::make('city')
+                    ->searchable()
+                    ->toggleable(),
                 TextColumn::make('phone')
                     ->searchable(),
                 TextColumn::make('creation_source')
                     ->badge()
-                    ->color(fn (CreationSource $state): string => match ($state) {
+                    ->color(fn(CreationSource $state): string => match ($state) {
                         CreationSource::WEB => 'info',
                         CreationSource::SYSTEM => 'warning',
                         CreationSource::IMPORT => 'success',

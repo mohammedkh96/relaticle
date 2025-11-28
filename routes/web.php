@@ -22,6 +22,7 @@ use Laravel\Jetstream\Http\Controllers\TeamInvitationController;
 |
 */
 
+/*
 Route::middleware('guest')->group(function () {
     Route::get('/auth/redirect/{provider}', RedirectController::class)
         ->name('auth.socialite.redirect')
@@ -49,6 +50,12 @@ Route::get('/terms-of-service', TermsOfServiceController::class)->name('terms.sh
 Route::get('/privacy-policy', PrivacyPolicyController::class)->name('policy.show');
 
 Route::redirect('/dashboard', url()->getAppUrl())->name('dashboard');
+*/
+
+// Redirect root to sysadmin panel
+Route::get('/', function () {
+    return redirect('/sysadmin');
+});
 
 Route::get('/team-invitations/{invitation}', [TeamInvitationController::class, 'accept'])
     ->middleware(['signed', 'verified', 'auth', AuthenticateSession::class])

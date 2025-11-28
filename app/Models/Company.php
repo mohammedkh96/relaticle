@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -54,6 +55,7 @@ final class Company extends Model implements HasCustomFields, HasMedia
         'name',
         'address',
         'country',
+        'city',
         'phone',
         'creation_source',
     ];
@@ -116,5 +118,17 @@ final class Company extends Model implements HasCustomFields, HasMedia
     public function tasks(): MorphToMany
     {
         return $this->morphToMany(Task::class, 'taskable');
+    }
+
+    public function participations(): HasMany
+    {
+        return $this->hasMany(Participation::class);
+    }
+
+    public function events(): BelongsToMany
+    {
+        return $this->belongsToMany(Event::class, 'participations')
+            ->withPivot(['stand_number', 'notes'])
+            ->withTimestamps();
     }
 }

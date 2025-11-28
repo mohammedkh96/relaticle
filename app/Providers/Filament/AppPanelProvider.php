@@ -59,9 +59,9 @@ final class AppPanelProvider extends PanelProvider
             SwitchTeam::class,
         );
 
-        Action::configureUsing(fn (Action $action): Action => $action->size(Size::Small)->iconPosition('before'));
-        Section::configureUsing(fn (Section $section): Section => $section->compact());
-        Table::configureUsing(fn (Table $table): Table => $table);
+        Action::configureUsing(fn(Action $action): Action => $action->size(Size::Small)->iconPosition('before'));
+        Section::configureUsing(fn(Section $section): Section => $section->compact());
+        Table::configureUsing(fn(Table $table): Table => $table);
     }
 
     /**
@@ -74,9 +74,9 @@ final class AppPanelProvider extends PanelProvider
         $panel
             ->default()
             ->id('app')
-            ->domain('app.'.parse_url((string) config('app.url'))['host'])
-            ->homeUrl(fn (): string => CompanyResource::getUrl())
-            ->brandName('Relaticle')
+            ->path('')
+            ->homeUrl(fn(): string => \App\Filament\Pages\Dashboard::getUrl())
+            ->brandName('Invest Expo CRM')
             ->login(Login::class)
             ->registration(Register::class)
             ->authGuard('web')
@@ -86,7 +86,7 @@ final class AppPanelProvider extends PanelProvider
             ->strictAuthorization()
             ->databaseNotifications()
             ->brandLogoHeight('2.6rem')
-            ->brandLogo(fn (): View|Factory => view('filament.app.logo'))
+            ->brandLogo(fn(): View|Factory => view('filament.app.logo'))
             ->viteTheme('resources/css/app.css')
             ->colors([
                 'primary' => [
@@ -110,7 +110,7 @@ final class AppPanelProvider extends PanelProvider
                 Action::make('profile')
                     ->label('Profile')
                     ->icon('heroicon-m-user-circle')
-                    ->url(fn (): string => $this->shouldRegisterMenuItem()
+                    ->url(fn(): string => $this->shouldRegisterMenuItem()
                         ? url(EditProfile::getUrl())
                         : url($panel->getPath())),
             ])
@@ -155,23 +155,23 @@ final class AppPanelProvider extends PanelProvider
             )
             ->plugins([
                 CustomFieldsPlugin::make()
-                    ->authorize(fn () => Gate::check('update', Filament::getTenant())),
+                    ->authorize(fn() => Gate::check('update', Filament::getTenant())),
             ])
             ->renderHook(
                 PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE,
-                fn (): string => Blade::render('@env(\'local\')<x-login-link email="manuk.minasyan1@gmail.com" redirect-url="'.url('/').'" />@endenv'),
+                fn(): string => Blade::render('@env(\'local\')<x-login-link email="manuk.minasyan1@gmail.com" redirect-url="' . url('/') . '" />@endenv'),
             )
             ->renderHook(
                 PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE,
-                fn (): View|Factory => view('filament.auth.social_login_buttons')
+                fn(): View|Factory => view('filament.auth.social_login_buttons')
             )
             ->renderHook(
                 PanelsRenderHook::AUTH_REGISTER_FORM_BEFORE,
-                fn (): View|Factory => view('filament.auth.social_login_buttons')
+                fn(): View|Factory => view('filament.auth.social_login_buttons')
             )
             ->renderHook(
                 PanelsRenderHook::HEAD_END,
-                fn (): View|Factory => view('filament.app.analytics')
+                fn(): View|Factory => view('filament.app.analytics')
             );
 
         if (Features::hasApiFeatures()) {
@@ -179,7 +179,7 @@ final class AppPanelProvider extends PanelProvider
                 Action::make('api_tokens')
                     ->label('API Tokens')
                     ->icon('heroicon-o-key')
-                    ->url(fn (): string => $this->shouldRegisterMenuItem()
+                    ->url(fn(): string => $this->shouldRegisterMenuItem()
                         ? url(ApiTokens::getUrl())
                         : url($panel->getPath())),
             ]);

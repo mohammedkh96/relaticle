@@ -49,7 +49,8 @@ final class SystemAdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Indigo,
             ])
-            ->brandName('Relaticle System Admin')
+            ->brandName('Invest Expo CRM')
+            ->homeUrl(fn(): string => Dashboard::getUrl())
             ->discoverResources(in: base_path('app-modules/SystemAdmin/src/Filament/Resources'), for: 'Relaticle\\SystemAdmin\\Filament\\Resources')
             ->discoverPages(in: base_path('app-modules/SystemAdmin/src/Filament/Pages'), for: 'Relaticle\\SystemAdmin\\Filament\\Pages')
             ->discoverWidgets(in: base_path('app-modules/SystemAdmin/src/Filament/Widgets'), for: 'Relaticle\\SystemAdmin\\Filament\\Widgets')

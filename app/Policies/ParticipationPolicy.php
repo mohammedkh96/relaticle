@@ -2,10 +2,10 @@
 
 namespace App\Policies;
 
-use App\Models\Opportunity;
+use App\Models\Participation;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class OpportunityPolicy
+class ParticipationPolicy
 {
     use HandlesAuthorization;
 
@@ -14,7 +14,7 @@ class OpportunityPolicy
         return true;
     }
 
-    public function view($user, Opportunity $opportunity): bool
+    public function view($user, Participation $participation): bool
     {
         return true;
     }
@@ -24,12 +24,12 @@ class OpportunityPolicy
         return true;
     }
 
-    public function update($user, Opportunity $opportunity): bool
+    public function update($user, Participation $participation): bool
     {
         return true;
     }
 
-    public function delete($user, Opportunity $opportunity): bool
+    public function delete($user, Participation $participation): bool
     {
         return true;
     }
@@ -39,12 +39,12 @@ class OpportunityPolicy
         return true;
     }
 
-    public function restore($user, Opportunity $opportunity): bool
+    public function restore($user, Participation $participation): bool
     {
         return true;
     }
 
-    public function forceDelete($user, Opportunity $opportunity): bool
+    public function forceDelete($user, Participation $participation): bool
     {
         return true;
     }

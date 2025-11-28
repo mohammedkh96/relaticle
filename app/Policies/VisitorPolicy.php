@@ -2,10 +2,10 @@
 
 namespace App\Policies;
 
-use App\Models\Team;
+use App\Models\Visitor;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class TeamPolicy
+class VisitorPolicy
 {
     use HandlesAuthorization;
 
@@ -14,7 +14,7 @@ class TeamPolicy
         return true;
     }
 
-    public function view($user, Team $team): bool
+    public function view($user, Visitor $visitor): bool
     {
         return true;
     }
@@ -24,17 +24,27 @@ class TeamPolicy
         return true;
     }
 
-    public function update($user, Team $team): bool
+    public function update($user, Visitor $visitor): bool
     {
         return true;
     }
 
-    public function delete($user, Team $team): bool
+    public function delete($user, Visitor $visitor): bool
     {
         return true;
     }
 
     public function deleteAny($user): bool
+    {
+        return true;
+    }
+
+    public function restore($user, Visitor $visitor): bool
+    {
+        return true;
+    }
+
+    public function forceDelete($user, Visitor $visitor): bool
     {
         return true;
     }
