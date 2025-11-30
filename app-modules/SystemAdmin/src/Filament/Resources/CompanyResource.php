@@ -22,6 +22,8 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Override;
 use App\Filament\Actions\SendWhatsAppAction;
+use App\Filament\Actions\BulkEmailAction;
+use App\Filament\Actions\BulkWhatsAppAction;
 use Relaticle\SystemAdmin\Filament\Resources\CompanyResource\Pages\CreateCompany;
 use Relaticle\SystemAdmin\Filament\Resources\CompanyResource\Pages\EditCompany;
 use Relaticle\SystemAdmin\Filament\Resources\CompanyResource\Pages\ListCompanies;
@@ -157,6 +159,8 @@ final class CompanyResource extends Resource
                 ImportAction::make()
                     ->importer(CompanyImporter::class),
                 BulkActionGroup::make([
+                    BulkEmailAction::make(),
+                    BulkWhatsAppAction::make(),
                     DeleteBulkAction::make(),
                 ]),
             ]);

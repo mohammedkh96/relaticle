@@ -24,6 +24,8 @@ use Relaticle\SystemAdmin\Filament\Resources\VisitorResource\Pages\EditVisitor;
 use Relaticle\SystemAdmin\Filament\Resources\VisitorResource\Pages\ListVisitors;
 use Relaticle\SystemAdmin\Filament\Resources\VisitorResource\Pages\ViewVisitor;
 use App\Filament\Actions\SendWhatsAppAction;
+use App\Filament\Actions\BulkEmailAction;
+use App\Filament\Actions\BulkWhatsAppAction;
 use Relaticle\SystemAdmin\Filament\Imports\VisitorImporter;
 
 final class VisitorResource extends Resource
@@ -124,6 +126,8 @@ final class VisitorResource extends Resource
                 ImportAction::make()
                     ->importer(VisitorImporter::class),
                 BulkActionGroup::make([
+                    BulkEmailAction::make(),
+                    BulkWhatsAppAction::make(),
                     DeleteBulkAction::make(),
                 ]),
             ])

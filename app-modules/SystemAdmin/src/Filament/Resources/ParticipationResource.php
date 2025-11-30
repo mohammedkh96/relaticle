@@ -25,6 +25,7 @@ use Relaticle\SystemAdmin\Filament\Resources\ParticipationResource\Pages\EditPar
 use Relaticle\SystemAdmin\Filament\Resources\ParticipationResource\Pages\ListParticipations;
 use Relaticle\SystemAdmin\Filament\Resources\ParticipationResource\Pages\ViewParticipation;
 use App\Filament\Actions\SendWhatsAppAction;
+use App\Filament\Actions\BulkWhatsAppAction;
 use Relaticle\SystemAdmin\Filament\Imports\ParticipationImporter;
 
 final class ParticipationResource extends Resource
@@ -118,6 +119,7 @@ final class ParticipationResource extends Resource
                 ImportAction::make()
                     ->importer(ParticipationImporter::class),
                 BulkActionGroup::make([
+                    BulkWhatsAppAction::make(),
                     DeleteBulkAction::make(),
                 ]),
             ])
