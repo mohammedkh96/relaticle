@@ -19,18 +19,62 @@ class BulkWhatsAppAction
             ->icon('heroicon-o-chat-bubble-left-right')
             ->color('success')
             ->form([
+                \Filament\Forms\Components\Radio::make('message_type')
+                    ->label('Message Type')
+                    ->options([
+                        'text' => 'Free Text (24h Window Only)',
+                        'template' => 'Message Template (Approved by Meta)',
+                    ])
+                    ->default('text')
+                    ->live()
+                    ->required(),
+
+                \Filament\Forms\Components\Section::make('Template Details')
+                    ->visible(fn($get) => $get('message_type') === 'template')
+                    ->schema([
+                        \Filament\Forms\Components\TextInput::make('template_name')
+                            ->label('Template Name')
+                            ->placeholder('hello_world')
+                            ->helperText('The exact name of the approved template in Meta Business Manager.')
+                            ->required(fn($get) => $get('message_type') === 'template'),
+
+                        \Filament\Forms\Components\Repeater::make('template_params')
+                            ->label('Body Parameters')
+                            ->schema([
+                                \Filament\Forms\Components\TextInput::make('value')
+                                    ->label('Parameter Value')
+                                    ->placeholder('e.g., John Doe')
+                                    ->required(),
+                            ])
+                            ->addActionLabel('Add Parameter')
+                            ->helperText('Add parameters in order {{1}}, {{2}}, etc.'),
+                    ]),
+
                 Textarea::make('message')
                     ->label('WhatsApp Message')
-                    ->required()
+                    ->required(fn($get) => $get('message_type') === 'text')
                     ->rows(8)
                     ->placeholder('Enter your WhatsApp message here...')
-                    ->helperText('This message will be sent to all selected recipients with phone numbers.'),
+                    ->helperText('Plain text message. WARNING: Only works if the user messaged you in the last 24 hours.')
+                    ->visible(fn($get) => $get('message_type') === 'text'),
             ])
             ->action(function (Collection $records, array $data): void {
-                $whatsappService = app(WhatsAppService::class);
-                $successCount = 0;
-                $failCount = 0;
+                $count = 0;
                 $noPhoneCount = 0;
+
+                $isTemplate = $data['message_type'] === 'template';
+                $templateName = $data['template_name'] ?? null;
+
+                // Extract values from repeater
+                $templateParams = [];
+                if ($isTemplate && !empty($data['template_params'])) {
+                    foreach ($data['template_params'] as $param) {
+                        $templateParams[] = [
+                            'type' => 'text',
+                            'text' => $param['value'],
+                        ];
+                    }
+                }
 
                 foreach ($records as $record) {
                     // Get phone number from record
@@ -41,51 +85,34 @@ class BulkWhatsAppAction
                         continue;
                     }
 
-                    try {
-                        $result = $whatsappService->sendMessage($phone, $data['message']);
+                    // Dispatch job to queue
+                    \App\Jobs\SendWhatsAppMessage::dispatch(
+                        $phone,
+                        $data['message'] ?? '',
+                        $isTemplate,
+                        $templateName,
+                        $templateParams
+                    );
 
-                        if ($result['success']) {
-                            $successCount++;
-                        } else {
-                            $failCount++;
-                            \Log::warning('Bulk WhatsApp failed', [
-                                'phone' => $phone,
-                                'message' => $result['message'] ?? 'Unknown error',
-                            ]);
-                        }
-                    } catch (\Exception $e) {
-                        $failCount++;
-                        \Log::error('Bulk WhatsApp exception', [
-                            'phone' => $phone,
-                            'error' => $e->getMessage(),
-                        ]);
-                    }
-
-                    // Small delay to avoid rate limiting
-                    usleep(100000); // 0.1 second delay
+                    $count++;
                 }
 
                 // Show notification
-                $message = "{$successCount} WhatsApp message(s) sent successfully.";
+                $message = "{$count} WhatsApp message(s) queued for sending.";
                 if ($noPhoneCount > 0) {
                     $message .= " {$noPhoneCount} record(s) skipped (no phone number).";
                 }
-                if ($failCount > 0) {
-                    $message .= " {$failCount} failed.";
-                }
-
-                $notificationType = $failCount > 0 ? 'warning' : 'success';
 
                 Notification::make()
-                            ->title('Bulk WhatsApp Sent')
-                            ->body($message)
-                    ->{$notificationType}()
-                        ->send();
+                    ->title('Bulk WhatsApp Queued')
+                    ->body($message)
+                    ->success()
+                    ->send();
             })
             ->deselectRecordsAfterCompletion()
             ->requiresConfirmation()
             ->modalHeading('Send Bulk WhatsApp')
             ->modalDescription('Send a WhatsApp message to all selected records with phone numbers.')
-            ->modalSubmitActionLabel('Send Messages');
+            ->modalSubmitActionLabel('Queue Messages');
     }
 }

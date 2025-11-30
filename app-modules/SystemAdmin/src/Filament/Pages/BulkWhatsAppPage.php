@@ -69,12 +69,44 @@ class BulkWhatsAppPage extends Page implements HasForms
                     ->helperText('Enter one phone number per line. Include country code (+)')
                     ->visible(fn($get) => $get('recipient_type') === 'manual_phones'),
 
+                \Filament\Forms\Components\Radio::make('message_type')
+                    ->label('Message Type')
+                    ->options([
+                        'text' => 'Free Text (24h Window Only)',
+                        'template' => 'Message Template (Approved by Meta)',
+                    ])
+                    ->default('text')
+                    ->live()
+                    ->required(),
+
+                \Filament\Forms\Components\Section::make('Template Details')
+                    ->visible(fn($get) => $get('message_type') === 'template')
+                    ->schema([
+                        \Filament\Forms\Components\TextInput::make('template_name')
+                            ->label('Template Name')
+                            ->placeholder('hello_world')
+                            ->helperText('The exact name of the approved template in Meta Business Manager.')
+                            ->required(fn($get) => $get('message_type') === 'template'),
+
+                        \Filament\Forms\Components\Repeater::make('template_params')
+                            ->label('Body Parameters')
+                            ->schema([
+                                \Filament\Forms\Components\TextInput::make('value')
+                                    ->label('Parameter Value')
+                                    ->placeholder('e.g., John Doe')
+                                    ->required(),
+                            ])
+                            ->addActionLabel('Add Parameter')
+                            ->helperText('Add parameters in order {{1}}, {{2}}, etc.'),
+                    ]),
+
                 Textarea::make('message')
                     ->label('WhatsApp Message')
-                    ->required()
+                    ->required(fn($get) => $get('message_type') === 'text')
                     ->rows(10)
                     ->placeholder('Enter your WhatsApp message here...')
-                    ->helperText('Plain text message. Keep it concise for better delivery.'),
+                    ->helperText('Plain text message. WARNING: Only works if the user messaged you in the last 24 hours.')
+                    ->visible(fn($get) => $get('message_type') === 'text'),
             ])
             ->statePath('data');
     }
@@ -93,42 +125,37 @@ class BulkWhatsAppPage extends Page implements HasForms
             return;
         }
 
-        $whatsappService = app(WhatsAppService::class);
-        $successCount = 0;
-        $failCount = 0;
+        $count = count($recipients);
+        $isTemplate = $data['message_type'] === 'template';
+        $templateName = $data['template_name'] ?? null;
 
-        foreach ($recipients as $recipient) {
-            try {
-                $result = $whatsappService->sendMessage($recipient['phone'], $data['message']);
-
-                if ($result['success']) {
-                    $successCount++;
-                } else {
-                    $failCount++;
-                    \Log::warning('Bulk WhatsApp failed', [
-                        'phone' => $recipient['phone'],
-                        'message' => $result['message'] ?? 'Unknown error',
-                    ]);
-                }
-
-                // Rate limiting - 0.2 second delay
-                usleep(200000);
-            } catch (\Exception $e) {
-                $failCount++;
-                \Log::error('Bulk WhatsApp exception', [
-                    'phone' => $recipient['phone'],
-                    'error' => $e->getMessage(),
-                ]);
+        // Extract values from repeater
+        $templateParams = [];
+        if ($isTemplate && !empty($data['template_params'])) {
+            foreach ($data['template_params'] as $param) {
+                $templateParams[] = [
+                    'type' => 'text',
+                    'text' => $param['value'],
+                ];
             }
         }
 
-        $notificationType = $failCount > 0 ? 'warning' : 'success';
+        foreach ($recipients as $recipient) {
+            // Dispatch job to queue
+            \App\Jobs\SendWhatsAppMessage::dispatch(
+                $recipient['phone'],
+                $data['message'] ?? '',
+                $isTemplate,
+                $templateName,
+                $templateParams
+            );
+        }
 
         Notification::make()
-                    ->title('WhatsApp Messages Sent')
-                    ->body("{$successCount} message(s) sent successfully. {$failCount} failed.")
-            ->{$notificationType}()
-                ->send();
+            ->title('Messages Queued')
+            ->body("{$count} message(s) have been queued for sending.")
+            ->success()
+            ->send();
 
         $this->form->fill();
     }

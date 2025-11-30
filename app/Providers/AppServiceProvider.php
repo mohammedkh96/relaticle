@@ -49,6 +49,32 @@ final class AppServiceProvider extends ServiceProvider
         $this->configureGitHubStars();
         $this->configureLivewire();
         $this->configureObservers();
+
+        try {
+            $settings = app(\App\Settings\CommunicationSettings::class);
+
+            if ($settings->mail_host) {
+                config([
+                    'mail.mailers.smtp.host' => $settings->mail_host,
+                    'mail.mailers.smtp.port' => $settings->mail_port,
+                    'mail.mailers.smtp.username' => $settings->mail_username,
+                    'mail.mailers.smtp.password' => $settings->mail_password,
+                    'mail.mailers.smtp.encryption' => $settings->mail_encryption,
+                    'mail.from.address' => $settings->mail_from_address,
+                    'mail.from.name' => $settings->mail_from_name,
+                ]);
+            }
+
+            if ($settings->whatsapp_api_token) {
+                config([
+                    'services.whatsapp.api_url' => $settings->whatsapp_api_url,
+                    'services.whatsapp.api_token' => $settings->whatsapp_api_token,
+                    'services.whatsapp.phone_number_id' => $settings->whatsapp_phone_number_id,
+                ]);
+            }
+        } catch (\Exception $e) {
+            // Settings table might not exist yet during migration or installation
+        }
     }
 
     private function configurePolicies(): void
