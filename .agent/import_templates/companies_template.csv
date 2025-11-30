@@ -1,0 +1,4 @@
+team_id,name,phone,address,country,city,account_owner_id
+1,"Acme Corporation","+1234567890","123 Main St","USA","New York",
+1,"Tech Solutions Inc","+0987654321","456 Tech Ave","USA","San Francisco",
+1,"Global Enterprises","+1122334455","789 Business Blvd","UK","London",

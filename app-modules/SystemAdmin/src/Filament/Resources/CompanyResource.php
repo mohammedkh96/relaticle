@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Cache;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ImportAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -20,10 +21,12 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Override;
+use App\Filament\Actions\SendWhatsAppAction;
 use Relaticle\SystemAdmin\Filament\Resources\CompanyResource\Pages\CreateCompany;
 use Relaticle\SystemAdmin\Filament\Resources\CompanyResource\Pages\EditCompany;
 use Relaticle\SystemAdmin\Filament\Resources\CompanyResource\Pages\ListCompanies;
 use Relaticle\SystemAdmin\Filament\Resources\CompanyResource\Pages\ViewCompany;
+use Relaticle\SystemAdmin\Filament\Imports\CompanyImporter;
 
 final class CompanyResource extends Resource
 {
@@ -147,8 +150,12 @@ final class CompanyResource extends Resource
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
+                SendWhatsAppAction::make()
+                    ->visible(fn($record) => filled($record->phone)),
             ])
             ->toolbarActions([
+                ImportAction::make()
+                    ->importer(CompanyImporter::class),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Cache;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ImportAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -23,6 +24,7 @@ use Relaticle\SystemAdmin\Filament\Resources\VisitorResource\Pages\EditVisitor;
 use Relaticle\SystemAdmin\Filament\Resources\VisitorResource\Pages\ListVisitors;
 use Relaticle\SystemAdmin\Filament\Resources\VisitorResource\Pages\ViewVisitor;
 use App\Filament\Actions\SendWhatsAppAction;
+use Relaticle\SystemAdmin\Filament\Imports\VisitorImporter;
 
 final class VisitorResource extends Resource
 {
@@ -119,6 +121,8 @@ final class VisitorResource extends Resource
                 SendWhatsAppAction::make(),
             ])
             ->toolbarActions([
+                ImportAction::make()
+                    ->importer(VisitorImporter::class),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

@@ -1,0 +1,4 @@
+event_id,name,phone,email,job,country,city
+1,"John Doe","+1234567890","john@example.com","CEO","USA","New York"
+1,"Jane Smith","+0987654321","jane@example.com","CTO","UK","London"
+1,"Bob Johnson","+1122334455","bob@example.com","Manager","Canada","Toronto"

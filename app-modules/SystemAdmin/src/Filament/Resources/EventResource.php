@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Cache;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ImportAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
@@ -21,6 +22,7 @@ use Relaticle\SystemAdmin\Filament\Resources\EventResource\Pages\CreateEvent;
 use Relaticle\SystemAdmin\Filament\Resources\EventResource\Pages\EditEvent;
 use Relaticle\SystemAdmin\Filament\Resources\EventResource\Pages\ListEvents;
 use Relaticle\SystemAdmin\Filament\Resources\EventResource\Pages\ViewEvent;
+use Relaticle\SystemAdmin\Filament\Imports\EventImporter;
 
 final class EventResource extends Resource
 {
@@ -100,6 +102,8 @@ final class EventResource extends Resource
                 EditAction::make(),
             ])
             ->toolbarActions([
+                ImportAction::make()
+                    ->importer(EventImporter::class),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Cache;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ImportAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -23,6 +24,8 @@ use Relaticle\SystemAdmin\Filament\Resources\ParticipationResource\Pages\CreateP
 use Relaticle\SystemAdmin\Filament\Resources\ParticipationResource\Pages\EditParticipation;
 use Relaticle\SystemAdmin\Filament\Resources\ParticipationResource\Pages\ListParticipations;
 use Relaticle\SystemAdmin\Filament\Resources\ParticipationResource\Pages\ViewParticipation;
+use App\Filament\Actions\SendWhatsAppAction;
+use Relaticle\SystemAdmin\Filament\Imports\ParticipationImporter;
 
 final class ParticipationResource extends Resource
 {
@@ -108,8 +111,12 @@ final class ParticipationResource extends Resource
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
+                SendWhatsAppAction::make()
+                    ->visible(fn($record) => filled($record->company?->phone)),
             ])
             ->toolbarActions([
+                ImportAction::make()
+                    ->importer(ParticipationImporter::class),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
