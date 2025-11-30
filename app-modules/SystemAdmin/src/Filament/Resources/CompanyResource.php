@@ -6,6 +6,8 @@ namespace Relaticle\SystemAdmin\Filament\Resources;
 
 use App\Enums\CreationSource;
 use App\Models\Company;
+use Filament\Facades\Filament;
+use Illuminate\Support\Facades\Cache;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -39,7 +41,21 @@ final class CompanyResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return self::getModel()::count() > 0 ? (string) self::getModel()::count() : null;
+        // Cache for 5 minutes to improve performance
+        $tenant = Filament::getTenant();
+        $cacheKey = 'nav_badge_company_' . ($tenant?->id ?? 'global');
+
+        return Cache::remember($cacheKey, 300, function () use ($tenant) {
+            $query = self::getModel()::query();
+
+            // Scope to current tenant if available
+            if ($tenant && method_exists(self::getModel(), 'team')) {
+                $query->where('team_id', $tenant->id);
+            }
+
+            $count = $query->count();
+            return $count > 0 ? (string) $count : null;
+        });
     }
 
     protected static ?string $slug = 'companies';
@@ -51,8 +67,11 @@ final class CompanyResource extends Resource
                 Select::make('team_id')
                     ->relationship('team', 'name')
                     ->required(),
-                TextInput::make('account_owner_id')
-                    ->numeric(),
+                Select::make('account_owner_id')
+                    ->relationship('accountOwner', 'name')
+                    ->label('Account Owner')
+                    ->searchable()
+                    ->preload(),
                 TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -80,9 +99,11 @@ final class CompanyResource extends Resource
                 TextColumn::make('team.name')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('account_owner_id')
-                    ->numeric()
-                    ->sortable(),
+                TextColumn::make('accountOwner.name')
+                    ->label('Account Owner')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('address')

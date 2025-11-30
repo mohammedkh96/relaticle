@@ -6,6 +6,8 @@ namespace Relaticle\SystemAdmin\Filament\Resources;
 
 use App\Enums\CreationSource;
 use App\Models\Task;
+use Filament\Facades\Filament;
+use Illuminate\Support\Facades\Cache;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -38,7 +40,16 @@ final class TaskResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return self::getModel()::count() > 0 ? (string) self::getModel()::count() : null;
+        $tenant = Filament::getTenant();
+        $cacheKey = 'nav_badge_task_' . ($tenant?->id ?? 'global');
+
+        return Cache::remember($cacheKey, 300, function () use ($tenant) {
+            $query = self::getModel()::query();
+            if ($tenant)
+                $query->where('team_id', $tenant->id);
+            $count = $query->count();
+            return $count > 0 ? (string) $count : null;
+        });
     }
 
     protected static ?string $slug = 'tasks';
@@ -50,15 +61,23 @@ final class TaskResource extends Resource
                 Select::make('team_id')
                     ->relationship('team', 'name')
                     ->required(),
-                Select::make('user_id')
-                    ->relationship('user', 'name'),
-                Select::make('assignee_id')
-                    ->relationship('assignee', 'name'),
+                Select::make('creator_id')
+                    ->relationship('creator', 'name')
+                    ->label('Creator')
+                    ->searchable()
+                    ->preload(),
+                Select::make('assignees')
+                    ->relationship('assignees', 'name')
+                    ->multiple()
+                    ->searchable()
+                    ->preload()
+                    ->label('Assignees'),
                 TextInput::make('title')
                     ->required()
                     ->maxLength(255),
                 TextInput::make('order_column')
-                    ->numeric(),
+                    ->numeric()
+                    ->label('Order'),
                 Select::make('creation_source')
                     ->options(CreationSource::class)
                     ->default(CreationSource::WEB),
@@ -70,22 +89,29 @@ final class TaskResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('team.name')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('user.name')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('assignee.name')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('title')
+                    ->sortable()
                     ->searchable(),
-                TextColumn::make('order_column')
-                    ->numeric()
+                TextColumn::make('creator.name')
+                    ->label('Creator')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+                TextColumn::make('assignees.name')
+                    ->label('Assignees')
+                    ->badge()
+                    ->separator(',')
+                    ->searchable(),
+                TextColumn::make('title')
+                    ->searchable()
                     ->sortable(),
+                TextColumn::make('order_column')
+                    ->label('Order')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('creation_source')
                     ->badge()
-                    ->color(fn (CreationSource $state): string => match ($state) {
+                    ->color(fn(CreationSource $state): string => match ($state) {
                         CreationSource::WEB => 'info',
                         CreationSource::SYSTEM => 'warning',
                         CreationSource::IMPORT => 'success',

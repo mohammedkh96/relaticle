@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Relaticle\SystemAdmin\Filament\Resources;
 
 use App\Models\Visitor;
+use Illuminate\Support\Facades\Cache;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -39,7 +40,10 @@ final class VisitorResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return self::getModel()::count() > 0 ? (string) self::getModel()::count() : null;
+        return Cache::remember('nav_badge_visitor', 300, function () {
+            $count = self::getModel()::count();
+            return $count > 0 ? (string) $count : null;
+        });
     }
 
     protected static ?string $slug = 'visitors';

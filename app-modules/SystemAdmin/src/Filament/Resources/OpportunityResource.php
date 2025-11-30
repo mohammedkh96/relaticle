@@ -6,6 +6,8 @@ namespace Relaticle\SystemAdmin\Filament\Resources;
 
 use App\Enums\CreationSource;
 use App\Models\Opportunity;
+use Filament\Facades\Filament;
+use Illuminate\Support\Facades\Cache;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -38,7 +40,16 @@ final class OpportunityResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return self::getModel()::count() > 0 ? (string) self::getModel()::count() : null;
+        $tenant = Filament::getTenant();
+        $cacheKey = 'nav_badge_opportunity_' . ($tenant?->id ?? 'global');
+
+        return Cache::remember($cacheKey, 300, function () use ($tenant) {
+            $query = self::getModel()::query();
+            if ($tenant)
+                $query->where('team_id', $tenant->id);
+            $count = $query->count();
+            return $count > 0 ? (string) $count : null;
+        });
     }
 
     protected static ?string $slug = 'opportunities';
@@ -67,7 +78,7 @@ final class OpportunityResource extends Resource
                     ->sortable(),
                 TextColumn::make('creation_source')
                     ->badge()
-                    ->color(fn (CreationSource $state): string => match ($state) {
+                    ->color(fn(CreationSource $state): string => match ($state) {
                         CreationSource::WEB => 'info',
                         CreationSource::SYSTEM => 'warning',
                         CreationSource::IMPORT => 'success',

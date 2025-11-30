@@ -6,13 +6,17 @@ namespace App\Providers;
 
 use App\Http\Responses\LoginResponse;
 use App\Models\Company;
+use App\Models\Event;
 use App\Models\Import;
 use App\Models\Note;
 use App\Models\Opportunity;
+use App\Models\Participation;
 use App\Models\People;
 use App\Models\Task;
 use App\Models\Team;
 use App\Models\User;
+use App\Models\Visitor;
+use App\Observers\ClearNavigationBadgeCacheObserver;
 use App\Services\GitHubService;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
@@ -44,6 +48,7 @@ final class AppServiceProvider extends ServiceProvider
         $this->configureFilament();
         $this->configureGitHubStars();
         $this->configureLivewire();
+        $this->configureObservers();
     }
 
     private function configurePolicies(): void
@@ -163,5 +168,20 @@ final class AppServiceProvider extends ServiceProvider
                 'formattedGithubStars' => $formattedStarsCount,
             ]);
         });
+    }
+
+    /**
+     * Configure model observers.
+     */
+    private function configureObservers(): void
+    {
+        // Register observer to clear navigation badge cache when models change
+        Company::observe(ClearNavigationBadgeCacheObserver::class);
+        People::observe(ClearNavigationBadgeCacheObserver::class);
+        Opportunity::observe(ClearNavigationBadgeCacheObserver::class);
+        Task::observe(ClearNavigationBadgeCacheObserver::class);
+        Event::observe(ClearNavigationBadgeCacheObserver::class);
+        Visitor::observe(ClearNavigationBadgeCacheObserver::class);
+        Participation::observe(ClearNavigationBadgeCacheObserver::class);
     }
 }
