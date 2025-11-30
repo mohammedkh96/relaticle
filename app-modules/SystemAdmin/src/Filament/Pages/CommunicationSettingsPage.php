@@ -49,51 +49,66 @@ class CommunicationSettingsPage extends Page implements HasForms
     {
         return $schema
             ->schema([
-                TextInput::make('mail_mailer')
-                    ->label('Email Mailer')
-                    ->default('smtp')
-                    ->required(),
-                TextInput::make('mail_host')
-                    ->label('Email Host')
-                    ->placeholder('smtp.gmail.com')
-                    ->required(),
-                TextInput::make('mail_port')
-                    ->label('Email Port')
-                    ->numeric()
-                    ->default(587)
-                    ->required(),
-                TextInput::make('mail_username')
-                    ->label('Email Username')
-                    ->required(),
-                TextInput::make('mail_password')
-                    ->label('Email Password')
-                    ->password()
-                    ->revealable()
-                    ->required(),
-                TextInput::make('mail_encryption')
-                    ->label('Email Encryption')
-                    ->default('tls'),
-                TextInput::make('mail_from_address')
-                    ->label('From Email Address')
-                    ->email()
-                    ->required(),
-                TextInput::make('mail_from_name')
-                    ->label('From Name')
-                    ->default(config('app.name')),
-                TextInput::make('whatsapp_api_url')
-                    ->label('WhatsApp API URL')
-                    ->default('https://graph.facebook.com/v21.0')
-                    ->required(),
-                TextInput::make('whatsapp_phone_number_id')
-                    ->label('WhatsApp Phone Number ID')
-                    ->required(),
-                TextInput::make('whatsapp_api_token')
-                    ->label('WhatsApp Access Token')
-                    ->password()
-                    ->revealable()
-                    ->required(),
+                \Filament\Schemas\Components\Tabs::make('Settings')
+                    ->tabs([
+                        \Filament\Schemas\Components\Tabs\Tab::make('Email Settings')
+                            ->icon('heroicon-o-envelope')
+                            ->schema([
+                                TextInput::make('mail_mailer')
+                                    ->label('Mailer')
+                                    ->default('smtp')
+                                    ->required(),
+                                TextInput::make('mail_host')
+                                    ->label('Host')
+                                    ->placeholder('smtp.gmail.com')
+                                    ->required(),
+                                TextInput::make('mail_port')
+                                    ->label('Port')
+                                    ->numeric()
+                                    ->default(587)
+                                    ->required(),
+                                TextInput::make('mail_username')
+                                    ->label('Username')
+                                    ->required(),
+                                TextInput::make('mail_password')
+                                    ->label('Password')
+                                    ->password()
+                                    ->revealable()
+                                    ->required(),
+                                TextInput::make('mail_encryption')
+                                    ->label('Encryption')
+                                    ->default('tls'),
+                                TextInput::make('mail_from_address')
+                                    ->label('From Email Address')
+                                    ->email()
+                                    ->required(),
+                                TextInput::make('mail_from_name')
+                                    ->label('From Name')
+                                    ->default(config('app.name')),
+                            ])
+                            ->columns(2),
+
+                        \Filament\Schemas\Components\Tabs\Tab::make('WhatsApp Settings')
+                            ->icon('heroicon-o-chat-bubble-left-right')
+                            ->schema([
+                                TextInput::make('whatsapp_api_url')
+                                    ->label('API URL')
+                                    ->default('https://graph.facebook.com/v21.0')
+                                    ->required()
+                                    ->columnSpanFull(),
+                                TextInput::make('whatsapp_phone_number_id')
+                                    ->label('Phone Number ID')
+                                    ->required(),
+                                TextInput::make('whatsapp_api_token')
+                                    ->label('Access Token')
+                                    ->password()
+                                    ->revealable()
+                                    ->required()
+                                    ->columnSpanFull(),
+                            ])
+                            ->columns(2),
+                    ])
             ])
-            ->columns(2)
             ->statePath('data');
     }
 
