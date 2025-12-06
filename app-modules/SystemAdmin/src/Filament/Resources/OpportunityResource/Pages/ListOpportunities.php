@@ -13,6 +13,11 @@ final class ListOpportunities extends ListRecords
 {
     protected static string $resource = OpportunityResource::class;
 
+    protected function modifyQueryUsing($query)
+    {
+        return $query->with(['company']);
+    }
+
     #[Override]
     protected function getHeaderActions(): array
     {

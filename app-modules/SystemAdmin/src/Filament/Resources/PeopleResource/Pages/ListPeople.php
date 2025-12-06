@@ -13,6 +13,11 @@ final class ListPeople extends ListRecords
 {
     protected static string $resource = PeopleResource::class;
 
+    protected function modifyQueryUsing($query)
+    {
+        return $query->with(['company']);
+    }
+
     #[Override]
     protected function getHeaderActions(): array
     {

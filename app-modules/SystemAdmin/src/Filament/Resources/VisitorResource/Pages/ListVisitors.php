@@ -13,6 +13,11 @@ final class ListVisitors extends ListRecords
 {
     protected static string $resource = VisitorResource::class;
 
+    protected function modifyQueryUsing($query)
+    {
+        return $query->with(['participations']);
+    }
+
     #[Override]
     protected function getHeaderActions(): array
     {

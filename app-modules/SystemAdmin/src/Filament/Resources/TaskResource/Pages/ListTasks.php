@@ -13,6 +13,11 @@ final class ListTasks extends ListRecords
 {
     protected static string $resource = TaskResource::class;
 
+    protected function modifyQueryUsing($query)
+    {
+        return $query->with(['creator', 'assignees']);
+    }
+
     #[Override]
     protected function getHeaderActions(): array
     {

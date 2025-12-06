@@ -13,6 +13,11 @@ final class ListParticipations extends ListRecords
 {
     protected static string $resource = ParticipationResource::class;
 
+    protected function modifyQueryUsing($query)
+    {
+        return $query->with(['event', 'visitor', 'company']);
+    }
+
     #[Override]
     protected function getHeaderActions(): array
     {

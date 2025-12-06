@@ -13,6 +13,11 @@ final class ListCompanies extends ListRecords
 {
     protected static string $resource = CompanyResource::class;
 
+    protected function modifyQueryUsing($query)
+    {
+        return $query->with(['accountOwner', 'people', 'opportunities', 'participations']);
+    }
+
     #[Override]
     protected function getHeaderActions(): array
     {
