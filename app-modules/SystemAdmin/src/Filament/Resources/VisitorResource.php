@@ -36,6 +36,8 @@ final class VisitorResource extends Resource
 
     protected static string|\UnitEnum|null $navigationGroup = 'Invest Expo';
 
+    protected static ?int $navigationGroupSort = -1;
+
     protected static ?int $navigationSort = 3;
 
     protected static ?string $modelLabel = 'Visitor';

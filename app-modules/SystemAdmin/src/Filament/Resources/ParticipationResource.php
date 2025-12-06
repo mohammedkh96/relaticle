@@ -36,6 +36,8 @@ final class ParticipationResource extends Resource
 
     protected static string|\UnitEnum|null $navigationGroup = 'Invest Expo';
 
+    protected static ?int $navigationGroupSort = -1;
+
     protected static ?int $navigationSort = 2;
 
     protected static ?string $modelLabel = 'Participation';
