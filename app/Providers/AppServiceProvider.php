@@ -75,6 +75,19 @@ final class AppServiceProvider extends ServiceProvider
         } catch (\Exception $e) {
             // Settings table might not exist yet during migration or installation
         }
+
+        // Enable slow query logging in development
+        if (app()->environment('local')) {
+            \DB::listen(function ($query) {
+                if ($query->time > 100) { // Log queries taking more than 100ms
+                    \Log::warning('Slow query detected', [
+                        'sql' => $query->sql,
+                        'bindings' => $query->bindings,
+                        'time' => $query->time . 'ms',
+                    ]);
+                }
+            });
+        }
     }
 
     private function configurePolicies(): void
