@@ -24,6 +24,8 @@ class CommunicationSettingsPage extends Page implements HasForms
 
     protected static \UnitEnum|string|null $navigationGroup = 'Communications';
 
+    protected static ?int $navigationGroupSort = 10;
+
     protected static ?int $navigationSort = 3;
 
     public ?array $data = [];

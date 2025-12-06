@@ -31,6 +31,8 @@ class BulkWhatsAppPage extends Page implements HasForms
 
     protected static \UnitEnum|string|null $navigationGroup = 'Communications';
 
+    protected static ?int $navigationGroupSort = 10;
+
     protected static ?int $navigationSort = 2;
 
     public ?array $data = [];
