@@ -79,26 +79,24 @@ class BulkWhatsAppPage extends Page implements HasForms
                     ->live()
                     ->required(),
 
-                \Filament\Forms\Components\Section::make('Template Details')
-                    ->visible(fn($get) => $get('message_type') === 'template')
-                    ->schema([
-                        \Filament\Forms\Components\TextInput::make('template_name')
-                            ->label('Template Name')
-                            ->placeholder('hello_world')
-                            ->helperText('The exact name of the approved template in Meta Business Manager.')
-                            ->required(fn($get) => $get('message_type') === 'template'),
+                \Filament\Forms\Components\TextInput::make('template_name')
+                    ->label('Template Name')
+                    ->placeholder('hello_world')
+                    ->helperText('The exact name of the approved template in Meta Business Manager.')
+                    ->required(fn($get) => $get('message_type') === 'template')
+                    ->visible(fn($get) => $get('message_type') === 'template'),
 
-                        \Filament\Forms\Components\Repeater::make('template_params')
-                            ->label('Body Parameters')
-                            ->schema([
-                                \Filament\Forms\Components\TextInput::make('value')
-                                    ->label('Parameter Value')
-                                    ->placeholder('e.g., John Doe')
-                                    ->required(),
-                            ])
-                            ->addActionLabel('Add Parameter')
-                            ->helperText('Add parameters in order {{1}}, {{2}}, etc.'),
-                    ]),
+                \Filament\Forms\Components\Repeater::make('template_params')
+                    ->label('Body Parameters')
+                    ->schema([
+                        \Filament\Forms\Components\TextInput::make('value')
+                            ->label('Parameter Value')
+                            ->placeholder('e.g., John Doe')
+                            ->required(),
+                    ])
+                    ->addActionLabel('Add Parameter')
+                    ->helperText('Add parameters in order {{1}}, {{2}}, etc.')
+                    ->visible(fn($get) => $get('message_type') === 'template'),
 
                 Textarea::make('message')
                     ->label('WhatsApp Message')
