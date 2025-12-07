@@ -58,6 +58,8 @@ final class Company extends Model implements HasCustomFields, HasMedia
         'city',
         'phone',
         'creation_source',
+        'category_id',
+        'data_source_id',
     ];
 
     /**
@@ -94,6 +96,26 @@ final class Company extends Model implements HasCustomFields, HasMedia
     public function accountOwner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'account_owner_id');
+    }
+
+    /**
+     * Category of the company (e.g., Construction, Architect)
+     *
+     * @return BelongsTo<Category, $this>
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Source of the company data
+     *
+     * @return BelongsTo<DataSource, $this>
+     */
+    public function dataSource(): BelongsTo
+    {
+        return $this->belongsTo(DataSource::class);
     }
 
     /**

@@ -91,6 +91,34 @@ final class CompanyResource extends Resource
                     ->tel()
                     ->required()
                     ->maxLength(255),
+                Select::make('category_id')
+                    ->relationship('category', 'name', fn($query) => $query->where('is_active', true))
+                    ->label('Category')
+                    ->searchable()
+                    ->preload()
+                    ->placeholder('Select category (e.g., Construction, Architect)')
+                    ->createOptionForm([
+                        \Filament\Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->maxLength(255),
+                        \Filament\Forms\Components\Textarea::make('description')
+                            ->rows(2),
+                    ])
+                    ->createOptionModalHeading('Create New Category'),
+                Select::make('data_source_id')
+                    ->relationship('dataSource', 'name', fn($query) => $query->where('is_active', true))
+                    ->label('Data Source')
+                    ->searchable()
+                    ->preload()
+                    ->placeholder('Select data source')
+                    ->createOptionForm([
+                        \Filament\Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->maxLength(255),
+                        \Filament\Forms\Components\Textarea::make('description')
+                            ->rows(2),
+                    ])
+                    ->createOptionModalHeading('Create New Data Source'),
                 Select::make('creation_source')
                     ->options(CreationSource::class)
                     ->default(CreationSource::WEB),
