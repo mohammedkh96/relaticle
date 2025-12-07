@@ -10,33 +10,37 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        // Add indexes to improve query performance
-        Schema::table('companies', function (Blueprint $table) {
-            $table->index('account_owner_id');
-        });
+        // Add indexes to improve query performance - with safety checks
 
-        Schema::table('people', function (Blueprint $table) {
-            $table->index('company_id');
-        });
+        if (Schema::hasColumn('companies', 'account_owner_id')) {
+            Schema::table('companies', function (Blueprint $table) {
+                $table->index('account_owner_id');
+            });
+        }
 
-        Schema::table('opportunities', function (Blueprint $table) {
-            $table->index('company_id');
-        });
+        if (Schema::hasColumn('people', 'company_id')) {
+            Schema::table('people', function (Blueprint $table) {
+                $table->index('company_id');
+            });
+        }
 
-        Schema::table('tasks', function (Blueprint $table) {
-            $table->index('created_by');
-        });
+        if (Schema::hasColumn('opportunities', 'company_id')) {
+            Schema::table('opportunities', function (Blueprint $table) {
+                $table->index('company_id');
+            });
+        }
 
-        Schema::table('task_user', function (Blueprint $table) {
-            $table->index('task_id');
-            $table->index('user_id');
-        });
+        if (Schema::hasColumn('participations', 'event_id')) {
+            Schema::table('participations', function (Blueprint $table) {
+                $table->index('event_id');
+            });
+        }
 
-        Schema::table('participations', function (Blueprint $table) {
-            $table->index('event_id');
-            $table->index('visitor_id');
-            $table->index('company_id');
-        });
+        if (Schema::hasColumn('participations', 'company_id')) {
+            Schema::table('participations', function (Blueprint $table) {
+                $table->index('company_id');
+            });
+        }
     }
 
     /**
@@ -44,31 +48,34 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('companies', function (Blueprint $table) {
-            $table->dropIndex(['account_owner_id']);
-        });
+        // Drop indexes safely
+        try {
+            Schema::table('companies', function (Blueprint $table) {
+                $table->dropIndex(['account_owner_id']);
+            });
+        } catch (\Exception $e) {
+        }
 
-        Schema::table('people', function (Blueprint $table) {
-            $table->dropIndex(['company_id']);
-        });
+        try {
+            Schema::table('people', function (Blueprint $table) {
+                $table->dropIndex(['company_id']);
+            });
+        } catch (\Exception $e) {
+        }
 
-        Schema::table('opportunities', function (Blueprint $table) {
-            $table->dropIndex(['company_id']);
-        });
+        try {
+            Schema::table('opportunities', function (Blueprint $table) {
+                $table->dropIndex(['company_id']);
+            });
+        } catch (\Exception $e) {
+        }
 
-        Schema::table('tasks', function (Blueprint $table) {
-            $table->dropIndex(['created_by']);
-        });
-
-        Schema::table('task_user', function (Blueprint $table) {
-            $table->dropIndex(['task_id']);
-            $table->dropIndex(['user_id']);
-        });
-
-        Schema::table('participations', function (Blueprint $table) {
-            $table->dropIndex(['event_id']);
-            $table->dropIndex(['visitor_id']);
-            $table->dropIndex(['company_id']);
-        });
+        try {
+            Schema::table('participations', function (Blueprint $table) {
+                $table->dropIndex(['event_id']);
+                $table->dropIndex(['company_id']);
+            });
+        } catch (\Exception $e) {
+        }
     }
 };
