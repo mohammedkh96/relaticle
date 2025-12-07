@@ -60,9 +60,11 @@ final class VisitorResource extends Resource
             ->components([
                 Select::make('event_id')
                     ->relationship('event', 'name')
+                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->name} {$record->year}")
                     ->required()
                     ->searchable()
-                    ->preload(),
+                    ->preload()
+                    ->default(fn() => request()->query('event')),
                 TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -73,6 +75,7 @@ final class VisitorResource extends Resource
                     ->email()
                     ->maxLength(255),
                 TextInput::make('job')
+                    ->label('Job Title')
                     ->maxLength(255),
                 TextInput::make('country')
                     ->maxLength(255),

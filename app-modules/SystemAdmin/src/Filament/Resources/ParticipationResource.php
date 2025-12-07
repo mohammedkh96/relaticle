@@ -62,14 +62,32 @@ final class ParticipationResource extends Resource
                     ->relationship('company', 'name')
                     ->required()
                     ->searchable()
-                    ->preload(),
+                    ->preload()
+                    ->createOptionForm([
+                        TextInput::make('name')
+                            ->required()
+                            ->maxLength(255),
+                        TextInput::make('phone')
+                            ->tel()
+                            ->maxLength(50),
+                        TextInput::make('address')
+                            ->maxLength(255),
+                        TextInput::make('country')
+                            ->maxLength(100),
+                        TextInput::make('city')
+                            ->maxLength(100),
+                    ])
+                    ->createOptionModalHeading('Create New Company'),
                 Select::make('event_id')
                     ->relationship('event', 'name')
+                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->name} {$record->year}")
                     ->required()
                     ->searchable()
-                    ->preload(),
+                    ->preload()
+                    ->default(fn() => request()->query('event')),
                 TextInput::make('stand_number')
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->placeholder('e.g., A12, B05'),
                 Textarea::make('notes')
                     ->rows(3)
                     ->columnSpanFull(),
