@@ -15,7 +15,7 @@ final class ListParticipations extends ListRecords
 
     protected function modifyQueryUsing($query)
     {
-        return $query->with(['event', 'visitor', 'company']);
+        return $query->with(['event', 'company']);
     }
 
     #[Override]

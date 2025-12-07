@@ -15,7 +15,7 @@ final class ListVisitors extends ListRecords
 
     protected function modifyQueryUsing($query)
     {
-        return $query->with(['participations']);
+        return $query->with(['event']);
     }
 
     #[Override]
