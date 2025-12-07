@@ -121,6 +121,8 @@ final class ParticipationResource extends Resource
                 ImportAction::make()
                     ->importer(ParticipationImporter::class),
                 BulkActionGroup::make([
+                    \Filament\Actions\ExportBulkAction::make()
+                        ->exporter(\Relaticle\SystemAdmin\Filament\Exports\ParticipationExporter::class),
                     BulkWhatsAppAction::make(),
                     DeleteBulkAction::make(),
                 ]),

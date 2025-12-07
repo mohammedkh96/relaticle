@@ -107,6 +107,8 @@ final class EventResource extends Resource
                 ImportAction::make()
                     ->importer(EventImporter::class),
                 BulkActionGroup::make([
+                    \Filament\Actions\ExportBulkAction::make()
+                        ->exporter(\Relaticle\SystemAdmin\Filament\Exports\EventExporter::class),
                     DeleteBulkAction::make(),
                 ]),
             ])

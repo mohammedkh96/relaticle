@@ -19,7 +19,11 @@ final readonly class CompanyObserver
             /** @var User $user */
             $user = auth()->user();
             $company->creator_id = $user->getKey();
-            $company->team_id = $user->currentTeam->getKey();
+
+            // Only set team_id if currentTeam exists (not in SystemAdmin panel)
+            if ($user->currentTeam) {
+                $company->team_id = $user->currentTeam->getKey();
+            }
         }
     }
 

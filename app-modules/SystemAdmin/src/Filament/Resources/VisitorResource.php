@@ -128,6 +128,8 @@ final class VisitorResource extends Resource
                 ImportAction::make()
                     ->importer(VisitorImporter::class),
                 BulkActionGroup::make([
+                    \Filament\Actions\ExportBulkAction::make()
+                        ->exporter(\Relaticle\SystemAdmin\Filament\Exports\VisitorExporter::class),
                     BulkEmailAction::make(),
                     BulkWhatsAppAction::make(),
                     DeleteBulkAction::make(),

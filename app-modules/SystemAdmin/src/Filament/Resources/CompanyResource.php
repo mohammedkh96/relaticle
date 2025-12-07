@@ -205,6 +205,8 @@ final class CompanyResource extends Resource
                 ImportAction::make()
                     ->importer(CompanyImporter::class),
                 BulkActionGroup::make([
+                    \Filament\Actions\ExportBulkAction::make()
+                        ->exporter(\Relaticle\SystemAdmin\Filament\Exports\CompanyExporter::class),
                     BulkEmailAction::make(),
                     BulkWhatsAppAction::make(),
                     DeleteBulkAction::make(),
