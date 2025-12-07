@@ -31,34 +31,35 @@ class SendWhatsAppAction extends Action
                     ->placeholder('Enter your message here...'),
             ])
             ->action(function (array $data, $record): void {
-                $whatsappService = app(WhatsAppService::class);
+                try {
+                    $whatsappService = app(WhatsAppService::class);
 
-                // Get phone number from record
-                $phone = $record->phone ?? null;
+                    // Get phone number from record
+                    $phone = $record->phone ?? null;
 
-                if (empty($phone)) {
-                    Notification::make()
-                        ->title('No phone number')
-                        ->body('This record does not have a phone number.')
-                        ->danger()
-                        ->send();
-                    return;
-                }
+                    if (empty($phone)) {
+                        Notification::make()
+                            ->title('No phone number')
+                            ->body('This record does not have a phone number.')
+                            ->danger()
+                            ->send();
+                        return;
+                    }
 
-                // Send message
-                $result = $whatsappService->sendMessage($phone, $data['message']);
+                    // Send message
+                    $result = $whatsappService->sendMessage($phone, $data['message']);
 
-                if ($result['success']) {
                     Notification::make()
                         ->title('Message sent')
                         ->body('WhatsApp message sent successfully.')
                         ->success()
                         ->send();
-                } else {
+
+                } catch (\Exception $e) {
                     Notification::make()
                         ->title('Failed to send')
-                        ->body($result['message'])
-                        ->warning()
+                        ->body($e->getMessage())
+                        ->danger()
                         ->send();
                 }
             });

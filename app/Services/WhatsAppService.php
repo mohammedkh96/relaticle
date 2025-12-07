@@ -9,15 +9,20 @@ use Illuminate\Support\Facades\Log;
 
 class WhatsAppService
 {
-    protected string $apiUrl;
-    protected string $apiToken;
-    protected string $phoneNumberId;
+    protected ?string $apiUrl;
+    protected ?string $apiToken;
+    protected ?string $phoneNumberId;
 
     public function __construct()
     {
-        $this->apiUrl = config('services.whatsapp.api_url', 'https://graph.facebook.com/v18.0');
-        $this->apiToken = config('services.whatsapp.api_token', '');
-        $this->phoneNumberId = config('services.whatsapp.phone_number_id', '');
+        $this->apiUrl = config('services.whatsapp.api_url') ?: 'https://graph.facebook.com/v18.0';
+        $this->apiToken = config('services.whatsapp.api_token');
+        $this->phoneNumberId = config('services.whatsapp.phone_number_id');
+    }
+
+    protected function isConfigured(): bool
+    {
+        return !empty($this->apiToken) && !empty($this->phoneNumberId);
     }
 
     /**
@@ -29,17 +34,9 @@ class WhatsAppService
      */
     public function sendMessage(string $to, string $message): array
     {
-        // If no API token is configured, log the message instead
-        if (empty($this->apiToken) || empty($this->phoneNumberId)) {
-            Log::info('WhatsApp message (not sent - no API credentials)', [
-                'to' => $to,
-                'message' => $message,
-            ]);
-
-            return [
-                'success' => false,
-                'message' => 'WhatsApp API not configured. Message logged instead.',
-            ];
+        // Check if API is configured
+        if (!$this->isConfigured()) {
+            throw new \Exception('WhatsApp API not configured. Please configure API credentials in Communication Settings.');
         }
 
         try {
@@ -54,39 +51,22 @@ class WhatsAppService
                 ]);
 
             if ($response->successful()) {
-                Log::info('WhatsApp message sent successfully', [
-                    'to' => $to,
-                    'response' => $response->json(),
-                ]);
-
                 return [
                     'success' => true,
-                    'message' => 'Message sent successfully',
                     'data' => $response->json(),
                 ];
             }
 
-            Log::error('WhatsApp message failed', [
-                'to' => $to,
-                'status' => $response->status(),
-                'response' => $response->json(),
-            ]);
+            $error = $response->json('error.message', 'Unknown error occurred');
+            throw new \Exception("WhatsApp API Error: {$error}");
 
-            return [
-                'success' => false,
-                'message' => 'Failed to send message',
-                'error' => $response->json(),
-            ];
         } catch (\Exception $e) {
-            Log::error('WhatsApp message exception', [
+            Log::error('WhatsApp send error', [
                 'to' => $to,
                 'error' => $e->getMessage(),
             ]);
 
-            return [
-                'success' => false,
-                'message' => 'Exception occurred: ' . $e->getMessage(),
-            ];
+            throw $e;
         }
     }
 
@@ -100,17 +80,8 @@ class WhatsAppService
      */
     public function sendTemplate(string $to, string $templateName, array $parameters = []): array
     {
-        if (empty($this->apiToken) || empty($this->phoneNumberId)) {
-            Log::info('WhatsApp template message (not sent - no API credentials)', [
-                'to' => $to,
-                'template' => $templateName,
-                'parameters' => $parameters,
-            ]);
-
-            return [
-                'success' => false,
-                'message' => 'WhatsApp API not configured. Message logged instead.',
-            ];
+        if (!$this->isConfigured()) {
+            throw new \Exception('WhatsApp API not configured. Please configure API credentials in Communication Settings.');
         }
 
         try {
@@ -134,42 +105,23 @@ class WhatsAppService
                 ]);
 
             if ($response->successful()) {
-                Log::info('WhatsApp template sent successfully', [
-                    'to' => $to,
-                    'template' => $templateName,
-                    'response' => $response->json(),
-                ]);
-
                 return [
                     'success' => true,
-                    'message' => 'Template sent successfully',
                     'data' => $response->json(),
                 ];
             }
 
-            Log::error('WhatsApp template failed', [
-                'to' => $to,
-                'template' => $templateName,
-                'status' => $response->status(),
-                'response' => $response->json(),
-            ]);
+            $error = $response->json('error.message', 'Unknown error occurred');
+            throw new \Exception("WhatsApp Template Error: {$error}");
 
-            return [
-                'success' => false,
-                'message' => 'Failed to send template',
-                'error' => $response->json(),
-            ];
         } catch (\Exception $e) {
-            Log::error('WhatsApp template exception', [
+            Log::error('WhatsApp template error', [
                 'to' => $to,
                 'template' => $templateName,
                 'error' => $e->getMessage(),
             ]);
 
-            return [
-                'success' => false,
-                'message' => 'Exception occurred: ' . $e->getMessage(),
-            ];
+            throw $e;
         }
     }
 }
