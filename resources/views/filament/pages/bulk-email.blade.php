@@ -1,74 +1,52 @@
 <x-filament-panels::page>
     <div class="space-y-6">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-            <div class="flex items-center gap-3 mb-4">
-                <x-heroicon-o-envelope class="w-8 h-8 text-primary-600" />
+        {{-- Header Banner --}}
+        <div class="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl p-6 text-white shadow-lg">
+            <div class="flex items-center gap-4">
+                <div class="p-3 bg-white/20 rounded-full">
+                    <x-heroicon-o-envelope class="w-8 h-8" />
+                </div>
                 <div>
-                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
-                        Bulk Email Campaign
-                    </h2>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">
-                        Send emails to multiple recipients at once
-                    </p>
+                    <h2 class="text-xl font-bold">Bulk Email Campaign</h2>
+                    <p class="text-blue-100">Send professional emails to companies, visitors, or event participants</p>
                 </div>
             </div>
+        </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-                    <div class="flex items-center gap-2">
-                        <x-heroicon-o-building-office class="w-5 h-5 text-blue-600" />
-                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Companies</span>
-                    </div>
-                    <p class="text-2xl font-bold text-blue-600 mt-2">
-                        {{ \App\Models\Company::whereNotNull('email')->count() }}
-                    </p>
-                    <p class="text-xs text-gray-600 dark:text-gray-400">with email</p>
-                </div>
-
-                <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
-                    <div class="flex items-center gap-2">
-                        <x-heroicon-o-user-group class="w-5 h-5 text-green-600" />
-                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Visitors</span>
-                    </div>
-                    <p class="text-2xl font-bold text-green-600 mt-2">
-                        {{ \App\Models\Visitor::whereNotNull('email')->count() }}
-                    </p>
-                    <p class="text-xs text-gray-600 dark:text-gray-400">with email</p>
-                </div>
-
-                <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
-                    <div class="flex items-center gap-2">
-                        <x-heroicon-o-document-arrow-up class="w-5 h-5 text-purple-600" />
-                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Import CSV</span>
-                    </div>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                        Upload your own contact list
+        {{-- Configuration Notice --}}
+        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
+            <div class="flex gap-3">
+                <x-heroicon-o-cog-6-tooth class="w-6 h-6 text-blue-500 flex-shrink-0" />
+                <div class="text-sm text-blue-800 dark:text-blue-200">
+                    <p class="font-medium">Sending emails via queue</p>
+                    <p class="mt-1">Emails are queued for background processing. Ensure <code
+                            class="bg-blue-100 dark:bg-blue-800 px-1 rounded">php artisan queue:work</code> is running.
                     </p>
                 </div>
             </div>
         </div>
 
-        <form wire:submit="send">
-            {{ $this->form }}
-
-            <div class="mt-6">
-                <x-filament::actions :actions="$this->getFormActions()" />
+        {{-- Form Card --}}
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="p-6">
+                {{ $this->form }}
             </div>
-        </form>
+            <div
+                class="px-6 py-4 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 rounded-b-xl">
+                {{ $this->getFormActions()[0] }}
+            </div>
+        </div>
 
-        <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-            <div class="flex gap-3">
-                <x-heroicon-o-information-circle class="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
-                <div class="text-sm text-yellow-800 dark:text-yellow-200">
-                    <p class="font-semibold mb-1">Important Notes:</p>
-                    <ul class="list-disc list-inside space-y-1">
-                        <li>Emails are queued for background processing</li>
-                        <li>Make sure queue worker is running: <code
-                                class="bg-yellow-100 dark:bg-yellow-900 px-1 rounded">php artisan queue:work</code></li>
-                        <li>CSV format: Must have "email" column, optional "name" column</li>
-                        <li>Invalid email addresses will be skipped</li>
-                    </ul>
-                </div>
+        {{-- Personalization Help --}}
+        <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg p-4">
+            <h3 class="font-medium text-green-800 dark:text-green-200 flex items-center gap-2">
+                <x-heroicon-o-sparkles class="w-5 h-5" />
+                Personalization
+            </h3>
+            <div class="mt-2 text-sm text-green-700 dark:text-green-300">
+                <p>Use <code class="bg-green-100 dark:bg-green-800 px-1 rounded">{name}</code> in your email body to
+                    personalize with recipient's name.</p>
+                <p class="mt-1">Example: "Hello {name}, thank you for your participation..."</p>
             </div>
         </div>
     </div>
