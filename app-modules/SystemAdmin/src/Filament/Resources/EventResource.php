@@ -119,7 +119,8 @@ final class EventResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            \Relaticle\SystemAdmin\Filament\Resources\EventResource\RelationManagers\ParticipationsRelationManager::class,
+            \Relaticle\SystemAdmin\Filament\Resources\EventResource\RelationManagers\VisitorsRelationManager::class,
         ];
     }
 
