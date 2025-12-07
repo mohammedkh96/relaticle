@@ -64,18 +64,36 @@ final class ParticipationResource extends Resource
                     ->searchable()
                     ->preload()
                     ->createOptionForm([
+                        \Filament\Forms\Components\Select::make('team_id')
+                            ->relationship('team', 'name')
+                            ->required()
+                            ->default(fn() => \App\Models\Team::first()?->id),
                         TextInput::make('name')
                             ->required()
                             ->maxLength(255),
-                        TextInput::make('phone')
-                            ->tel()
-                            ->maxLength(50),
                         TextInput::make('address')
+                            ->required()
                             ->maxLength(255),
                         TextInput::make('country')
-                            ->maxLength(100),
+                            ->maxLength(255),
                         TextInput::make('city')
-                            ->maxLength(100),
+                            ->maxLength(255),
+                        TextInput::make('phone')
+                            ->tel()
+                            ->required()
+                            ->maxLength(255),
+                        \Filament\Forms\Components\Select::make('category_id')
+                            ->relationship('category', 'name', fn($query) => $query->where('is_active', true))
+                            ->label('Category')
+                            ->searchable()
+                            ->preload()
+                            ->placeholder('Select category'),
+                        \Filament\Forms\Components\Select::make('data_source_id')
+                            ->relationship('dataSource', 'name', fn($query) => $query->where('is_active', true))
+                            ->label('Data Source')
+                            ->searchable()
+                            ->preload()
+                            ->placeholder('Select data source'),
                     ])
                     ->createOptionModalHeading('Create New Company'),
                 Select::make('event_id')

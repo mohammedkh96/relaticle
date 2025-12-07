@@ -119,9 +119,6 @@ final class CompanyResource extends Resource
                             ->rows(2),
                     ])
                     ->createOptionModalHeading('Create New Data Source'),
-                Select::make('creation_source')
-                    ->options(CreationSource::class)
-                    ->default(CreationSource::WEB),
             ]);
     }
 
