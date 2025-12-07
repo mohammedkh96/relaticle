@@ -170,15 +170,6 @@ final class CompanyResource extends Resource
                     ->toggleable(),
                 TextColumn::make('phone')
                     ->searchable(),
-                TextColumn::make('creation_source')
-                    ->badge()
-                    ->color(fn(CreationSource $state): string => match ($state) {
-                        CreationSource::WEB => 'info',
-                        CreationSource::SYSTEM => 'warning',
-                        CreationSource::IMPORT => 'success',
-                    })
-                    ->label('Source')
-                    ->toggleable(),
                 TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
