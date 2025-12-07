@@ -8,6 +8,7 @@ use App\Models\Team;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
@@ -18,6 +19,7 @@ use Filament\Tables\Table;
 use Relaticle\SystemAdmin\Filament\Resources\TeamResource\Pages\CreateTeam;
 use Relaticle\SystemAdmin\Filament\Resources\TeamResource\Pages\EditTeam;
 use Relaticle\SystemAdmin\Filament\Resources\TeamResource\Pages\ListTeams;
+use Relaticle\SystemAdmin\Filament\Resources\TeamResource\Pages\ViewTeam;
 
 final class TeamResource extends Resource
 {
@@ -68,6 +70,7 @@ final class TeamResource extends Resource
                 //
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make(),
             ])
             ->toolbarActions([
@@ -89,6 +92,7 @@ final class TeamResource extends Resource
         return [
             'index' => ListTeams::route('/'),
             'create' => CreateTeam::route('/create'),
+            'view' => ViewTeam::route('/{record}'),
             'edit' => EditTeam::route('/{record}/edit'),
         ];
     }
