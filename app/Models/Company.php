@@ -131,4 +131,37 @@ final class Company extends Model implements HasCustomFields, HasMedia
             ->withPivot(['stand_number', 'notes'])
             ->withTimestamps();
     }
+
+    /**
+     * Get list of years company participated
+     */
+    public function getParticipationYearsAttribute(): array
+    {
+        return $this->events()
+            ->orderBy('year', 'desc')
+            ->pluck('year')
+            ->unique()
+            ->values()
+            ->toArray();
+    }
+
+    /**
+     * Get count of events participated
+     */
+    public function getParticipationCountAttribute(): int
+    {
+        return $this->participations()->count();
+    }
+
+    /**
+     * Get formatted participation years string
+     */
+    public function getParticipationYearsDisplayAttribute(): string
+    {
+        $years = $this->participation_years;
+        if (empty($years)) {
+            return 'No participations';
+        }
+        return implode(', ', $years);
+    }
 }

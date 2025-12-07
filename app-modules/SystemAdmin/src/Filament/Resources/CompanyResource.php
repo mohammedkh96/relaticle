@@ -110,9 +110,33 @@ final class CompanyResource extends Resource
                     ->searchable()
                     ->toggleable(),
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('participation_count')
+                    ->label('Events')
+                    ->badge()
+                    ->color(fn($state) => match (true) {
+                        $state >= 5 => 'success',
+                        $state >= 3 => 'warning',
+                        $state >= 1 => 'info',
+                        default => 'gray',
+                    })
+                    ->sortable(query: function ($query, string $direction) {
+                        return $query->withCount('participations')
+                            ->orderBy('participations_count', $direction);
+                    }),
+                TextColumn::make('participation_years_display')
+                    ->label('Years Participated')
+                    ->wrap()
+                    ->searchable(query: function ($query, string $search) {
+                        return $query->whereHas('events', function ($q) use ($search) {
+                            $q->where('year', 'like', "%{$search}%");
+                        });
+                    })
+                    ->toggleable(),
                 TextColumn::make('address')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('country')
                     ->searchable()
                     ->toggleable(),
@@ -148,6 +172,28 @@ final class CompanyResource extends Resource
                     ->label('Creation Source')
                     ->options(CreationSource::class)
                     ->multiple(),
+                SelectFilter::make('participation_year')
+                    ->label('Participated in Year')
+                    ->options(fn() => \App\Models\Event::orderBy('year', 'desc')
+                        ->pluck('year', 'year')
+                        ->unique()
+                        ->toArray())
+                    ->query(fn($query, array $data) => $query->when(
+                        $data['value'],
+                        fn($q) => $q->whereHas('events', fn($e) => $e->where('year', $data['value']))
+                    )),
+                SelectFilter::make('participation_count')
+                    ->label('Number of Events')
+                    ->options([
+                        '1' => '1 event',
+                        '2' => '2 events',
+                        '3' => '3+ events',
+                        '5' => '5+ events',
+                    ])
+                    ->query(fn($query, array $data) => $query->when(
+                        $data['value'],
+                        fn($q) => $q->has('participations', '>=', (int) $data['value'])
+                    )),
             ])
             ->recordActions([
                 ViewAction::make(),
