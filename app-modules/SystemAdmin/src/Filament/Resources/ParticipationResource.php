@@ -42,9 +42,9 @@ final class ParticipationResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
-    protected static ?string $modelLabel = 'Participation';
+    protected static ?string $modelLabel = 'Exhibitor';
 
-    protected static ?string $pluralModelLabel = 'Participations';
+    protected static ?string $pluralModelLabel = 'Exhibitors';
 
     public static function getNavigationBadge(): ?string
     {

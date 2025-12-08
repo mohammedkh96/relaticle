@@ -43,7 +43,12 @@ class EventParticipantsPage extends Page implements HasTable, HasForms
     public function mount(): void
     {
         $id = request()->query('event_id');
-        $this->selectedEventId = $id ? (int) $id : null;
+        if ($id) {
+            $this->selectedEventId = (int) $id;
+        } else {
+            $latest = Event::orderBy('year', 'desc')->first();
+            $this->selectedEventId = $latest?->id;
+        }
     }
 
     public function getTitle(): string
@@ -85,6 +90,9 @@ class EventParticipantsPage extends Page implements HasTable, HasForms
                     ->label('Stand Number')
                     ->searchable()
                     ->sortable(),
+                \Filament\Tables\Columns\ToggleColumn::make('logo_received')->label('Logo'),
+                \Filament\Tables\Columns\ToggleColumn::make('catalog_received')->label('Catalog'),
+                \Filament\Tables\Columns\ToggleColumn::make('badge_names_received')->label('Badges'),
                 TextColumn::make('notes')
                     ->limit(50)
                     ->tooltip(function (TextColumn $column): ?string {
