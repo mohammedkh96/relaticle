@@ -65,10 +65,49 @@
                     </div>
                 </div>
             @else
-                <div class="flex flex-col items-center justify-center p-12 bg-white rounded-xl shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 h-full min-h-[400px]">
-                    <x-heroicon-o-cursor-arrow-ripple class="h-16 w-16 text-gray-400" />
-                    <h3 class="mt-4 text-lg font-semibold text-gray-900 dark:text-white">Select an Event</h3>
-                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Click on an event from the list on the right to view visitors.</p>
+                <div class="fi-section rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
+                    <div class="fi-section-header px-6 py-4 border-b border-gray-200 dark:border-white/10">
+                        <h3 class="fi-section-heading text-base font-semibold leading-6 text-gray-950 dark:text-white">
+                            Select an Event
+                        </h3>
+                    </div>
+                    <div class="fi-section-content">
+                        <div class="overflow-x-auto">
+                            <table class="w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead>
+                                    <tr class="bg-gray-50 dark:bg-gray-800">
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Event Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Year</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Visitors</th>
+                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
+                                    @foreach($this->getEvents() as $event)
+                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition cursor-pointer" wire:click="selectEvent({{ $event->id }})">
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                                                {{ $event->name }}
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                                {{ $event->year }}
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                                <span class="inline-flex items-center rounded-md bg-primary-50 px-2 py-1 text-xs font-medium text-primary-700 ring-1 ring-inset ring-primary-700/10 dark:bg-primary-400/10 dark:text-primary-400 dark:ring-primary-400/30">
+                                                    {{ $event->visitors()->count() }} Visitors
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                <button type="button" wire:click.stop="selectEvent({{ $event->id }})" 
+                                                    class="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300">
+                                                    View Details
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             @endif
         </div>

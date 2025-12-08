@@ -34,6 +34,8 @@ final class VisitorResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static string|\UnitEnum|null $navigationGroup = 'Invest Expo';
 
     protected static ?int $navigationGroupSort = -1;
