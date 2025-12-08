@@ -113,4 +113,8 @@ final class SystemAdminPanelProvider extends PanelProvider
             ])
             ->viteTheme('resources/css/filament/admin/theme.css');
     }
+    public function boot(): void
+    {
+        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'system-admin');
+    }
 }

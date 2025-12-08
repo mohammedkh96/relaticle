@@ -170,6 +170,22 @@ final class OpportunityResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                SelectFilter::make('status')
+                    ->options(\App\Enums\OpportunityStatus::class)
+                    ->multiple(),
+                SelectFilter::make('temperature')
+                    ->options(\App\Enums\OpportunityTemperature::class)
+                    ->multiple(),
+                SelectFilter::make('event_id')
+                    ->relationship('event', 'name')
+                    ->label('Event')
+                    ->searchable()
+                    ->preload(),
+                SelectFilter::make('assigned_to')
+                    ->relationship('assignee', 'name')
+                    ->label('Assigned To')
+                    ->searchable()
+                    ->preload(),
                 SelectFilter::make('creation_source')
                     ->label('Creation Source')
                     ->options(CreationSource::class)

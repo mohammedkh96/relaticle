@@ -17,21 +17,15 @@ final class Dashboard extends BaseDashboard
 
     protected static ?string $navigationLabel = 'Dashboard';
 
-    public function getHeaderActions(): array
+    public function getColumns(): int|array
     {
-        return [
-            Action::make('view-site')
-                ->label('View Website')
-                ->url(config('app.url'))
-                ->icon('heroicon-o-globe-alt')
-                ->color('gray')
-                ->openUrlInNewTab(),
-        ];
+        return 2;
     }
 
     public function getWidgets(): array
     {
         return [
+            \Relaticle\SystemAdmin\Filament\Widgets\QuickActionsWidget::class,
             \Relaticle\SystemAdmin\Filament\Widgets\DashboardStatsWidget::class,
             \Relaticle\SystemAdmin\Filament\Widgets\RevenueChartWidget::class,
             \Relaticle\SystemAdmin\Filament\Widgets\LatestInvoicesWidget::class,

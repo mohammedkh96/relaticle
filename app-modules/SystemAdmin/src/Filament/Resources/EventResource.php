@@ -109,7 +109,12 @@ final class EventResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                \Filament\Tables\Filters\SelectFilter::make('status')
+                    ->options(\App\Enums\EventStatus::class)
+                    ->multiple(),
+                \Filament\Tables\Filters\SelectFilter::make('year')
+                    ->options(fn() => Event::distinct()->pluck('year', 'year')->all())
+                    ->multiple(),
             ])
             ->recordActions([
                 ViewAction::make(),

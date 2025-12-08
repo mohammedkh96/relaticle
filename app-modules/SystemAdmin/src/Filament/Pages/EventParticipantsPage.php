@@ -68,6 +68,7 @@ class EventParticipantsPage extends Page implements HasTable, HasForms
     public function selectEvent(int $eventId): void
     {
         $this->selectedEventId = $eventId;
+        $this->resetTable();
     }
 
     public function table(Table $table): Table
@@ -90,9 +91,21 @@ class EventParticipantsPage extends Page implements HasTable, HasForms
                     ->label('Stand Number')
                     ->searchable()
                     ->sortable(),
-                \Filament\Tables\Columns\ToggleColumn::make('logo_received')->label('Logo'),
-                \Filament\Tables\Columns\ToggleColumn::make('catalog_received')->label('Catalog'),
-                \Filament\Tables\Columns\ToggleColumn::make('badge_names_received')->label('Badges'),
+                \Filament\Tables\Columns\ToggleColumn::make('logo_received')
+                    ->label('Logo')
+                    ->afterStateUpdated(function ($record, $state) {
+                        $record->update(['logo_received' => $state]);
+                    }),
+                \Filament\Tables\Columns\ToggleColumn::make('catalog_received')
+                    ->label('Catalog')
+                    ->afterStateUpdated(function ($record, $state) {
+                        $record->update(['catalog_received' => $state]);
+                    }),
+                \Filament\Tables\Columns\ToggleColumn::make('badge_names_received')
+                    ->label('Badges')
+                    ->afterStateUpdated(function ($record, $state) {
+                        $record->update(['badge_names_received' => $state]);
+                    }),
                 TextColumn::make('notes')
                     ->limit(50)
                     ->tooltip(function (TextColumn $column): ?string {
