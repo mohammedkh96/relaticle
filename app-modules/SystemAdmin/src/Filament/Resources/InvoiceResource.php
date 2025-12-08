@@ -52,7 +52,7 @@ final class InvoiceResource extends Resource
                                     $set('total_amount', $participation->final_price);
 
                                     // Auto-fill description
-                                    $desc = "Participation in event: {$participation->event->name}\nStand Number: {$participation->stand_number}";
+                                    $desc = "Exhibition Space Rental and Participation Fees\nEvent: {$participation->event->name}\nDesignated Stand: {$participation->stand_number}";
                                     $set('simple_description', $desc);
                                 }
                             })
@@ -63,15 +63,22 @@ final class InvoiceResource extends Resource
                             ->dehydrated()
                             ->required(),
                         TextInput::make('invoice_number')
-                            ->default('INV-' . strtoupper(uniqid()))
+                            ->default(function () {
+                                $last = \App\Models\Invoice::latest('id')->first();
+                                if ($last && preg_match('/IN-(\d+)/', $last->invoice_number, $matches)) {
+                                    $next = (int) $matches[1] + 1;
+                                } else {
+                                    $next = 1;
+                                }
+                                return 'IN-' . str_pad((string) $next, 3, '0', STR_PAD_LEFT);
+                            })
                             ->required()
                             ->unique(ignoreRecord: true),
                         DatePicker::make('issue_date')
                             ->default(now())
                             ->required(),
                         DatePicker::make('due_date')
-                            ->default(now()->addDays(14))
-                            ->required(),
+                            ->default(now()->addDays(14)),
                         Select::make('status')
                             ->options(InvoiceStatus::class)
                             ->default(InvoiceStatus::DRAFT)
@@ -114,7 +121,14 @@ final class InvoiceResource extends Resource
                 TextColumn::make('status')->badge()->sortable(),
             ])
             ->filters([
-                //
+                \Filament\Tables\Filters\SelectFilter::make('status')
+                    ->options(InvoiceStatus::class)
+                    ->multiple(),
+                \Filament\Tables\Filters\SelectFilter::make('event_id')
+                    ->relationship('event', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->label('Event'),
             ])
             ->actions([
                 \Filament\Actions\ViewAction::make(),

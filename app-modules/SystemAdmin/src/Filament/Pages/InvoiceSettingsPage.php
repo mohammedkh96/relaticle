@@ -36,6 +36,7 @@ class InvoiceSettingsPage extends Page implements HasForms
             'company_name' => $settings->company_name ?? config('app.name'),
             'company_address' => $settings->company_address,
             'company_phone' => $settings->company_phone,
+            'company_email' => $settings->company_email,
             'company_logo' => $settings->company_logo,
             'invoice_note' => $settings->invoice_note,
         ]);
@@ -57,6 +58,9 @@ class InvoiceSettingsPage extends Page implements HasForms
                         TextInput::make('company_phone')
                             ->label('Phone Number')
                             ->tel(),
+                        TextInput::make('company_email')
+                            ->label('Email Address')
+                            ->email(),
                         FileUpload::make('company_logo')
                             ->label('Logo')
                             ->image()
@@ -82,6 +86,7 @@ class InvoiceSettingsPage extends Page implements HasForms
         $settings->company_name = $data['company_name'];
         $settings->company_address = $data['company_address'];
         $settings->company_phone = $data['company_phone'];
+        $settings->company_email = $data['company_email'];
         $settings->company_logo = $data['company_logo']; // FileUpload returns path string or array? Usually string for single
         $settings->invoice_note = $data['invoice_note'];
 

@@ -26,11 +26,11 @@ class EventParticipantsPage extends Page implements HasTable, HasForms
 
     protected static string|\UnitEnum|null $navigationGroup = 'Invest Expo';
 
-    protected static ?string $navigationLabel = 'Participations';
+    protected static ?string $navigationLabel = 'Exhibitors';
 
     protected static ?int $navigationSort = 2;
 
-    protected static ?string $slug = 'event-participants';
+    protected static ?string $slug = 'event-exhibitors';
 
     protected string $view = 'filament.pages.event-participants';
 
@@ -50,9 +50,9 @@ class EventParticipantsPage extends Page implements HasTable, HasForms
     {
         if ($this->selectedEventId) {
             $event = Event::find($this->selectedEventId);
-            return $event ? "Participations - {$event->name} {$event->year}" : 'Participations';
+            return $event ? "Exhibitors - {$event->name} {$event->year}" : 'Exhibitors';
         }
-        return 'Select Event for Participations';
+        return 'Select Event for Exhibitors';
     }
 
     public function getEvents()
@@ -109,7 +109,7 @@ class EventParticipantsPage extends Page implements HasTable, HasForms
             ])
             ->headerActions([
                 CreateAction::make('create_participation')
-                    ->label('Add Participation')
+                    ->label('Add Exhibitor')
                     ->url(fn() => ParticipationResource::getUrl('create', ['event' => $this->selectedEventId]))
                     ->hidden(fn() => !$this->selectedEventId),
             ])

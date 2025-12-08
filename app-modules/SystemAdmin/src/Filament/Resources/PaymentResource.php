@@ -83,7 +83,20 @@ final class PaymentResource extends Resource
                 TextColumn::make('payment_date')->date()->sortable(),
             ])
             ->filters([
-                //
+                \Filament\Tables\Filters\SelectFilter::make('status')
+                    ->options(PaymentStatus::class)
+                    ->multiple(),
+                \Filament\Tables\Filters\SelectFilter::make('type')
+                    ->options(PaymentType::class)
+                    ->multiple(),
+                \Filament\Tables\Filters\SelectFilter::make('method')
+                    ->options(PaymentMethod::class)
+                    ->multiple(),
+                \Filament\Tables\Filters\SelectFilter::make('event_id')
+                    ->relationship('event', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->label('Event'),
             ])
             ->actions([
                 \Filament\Actions\EditAction::make(),
@@ -91,39 +104,9 @@ final class PaymentResource extends Resource
                     ->label('Make Invoice')
                     ->icon('heroicon-o-document-plus')
                     ->color('success')
-                    ->requiresConfirmation()
-                    ->modalHeading('Generate Invoice from Payment')
-                    ->modalDescription('This will create a PAID invoice for this payment amount. Continue?')
-                    ->action(function (Payment $record) {
-                        $participation = $record->participation;
-
-                        $invoice = \App\Models\Invoice::create([
-                            'event_id' => $record->event_id,
-                            'participation_id' => $record->participation_id,
-                            'company_id' => $participation->company_id,
-                            'invoice_number' => 'INV-' . strtoupper(uniqid()),
-                            'issue_date' => $record->payment_date,
-                            'due_date' => $record->payment_date,
-                            'total_amount' => $record->amount,
-                            'status' => \App\Enums\InvoiceStatus::PAID,
-                            'items' => [
-                                [
-                                    'description' => "Payment Reference: {$record->transaction_ref} ({$record->method->getLabel()})",
-                                    'quantity' => 1,
-                                    'unit_price' => $record->amount,
-                                    'amount' => $record->amount,
-                                ]
-                            ],
-                            'notes' => "Auto-generated from Payment ID: #{$record->id}",
-                        ]);
-
-                        \Filament\Notifications\Notification::make()
-                            ->title('Invoice Generated')
-                            ->success()
-                            ->send();
-
-                        return redirect()->to(\Relaticle\SystemAdmin\Filament\Resources\InvoiceResource::getUrl('view', ['record' => $invoice]));
-                    }),
+                    ->url(fn(Payment $record) => \Relaticle\SystemAdmin\Filament\Resources\InvoiceResource::getUrl('create', [
+                        'payment_id' => $record->id,
+                    ])),
             ])
             ->bulkActions([
                 \Filament\Actions\DeleteBulkAction::make(),

@@ -71,7 +71,7 @@ final class OpportunityResource extends Resource
                             ->preload()
                             ->required()
                             ->rules([
-                                fn(\Filament\Forms\Get $get, ?\Illuminate\Database\Eloquent\Model $record) => function (string $attribute, $value, \Closure $fail) use ($get, $record) {
+                                fn($get, ?\Illuminate\Database\Eloquent\Model $record) => function (string $attribute, $value, \Closure $fail) use ($get, $record) {
                                     $eventId = $get('event_id');
                                     if (!$eventId)
                                         return;

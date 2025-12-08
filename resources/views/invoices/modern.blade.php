@@ -40,8 +40,7 @@
                     <img src="{{ \Illuminate\Support\Facades\Storage::url($settings->company_logo) }}" alt="Logo"
                         class="h-16 object-contain mb-4">
                 @else
-                    <h1 class="text-3xl font-bold text-gray-800 tracking-tight">
-                        {{ $settings->company_name ?? config('app.name') }}</h1>
+                    <img src="{{ asset('logo.png') }}" alt="Logo" class="h-16 object-contain mb-4">
                 @endif
 
                 <div class="text-sm text-gray-500 space-y-1">
@@ -50,6 +49,9 @@
                     @endif
                     @if($settings->company_phone)
                         <p>Tel: {{ $settings->company_phone }}</p>
+                    @endif
+                    @if($settings->company_email)
+                        <p>Email: {{ $settings->company_email }}</p>
                     @endif
                 </div>
             </div>
@@ -90,10 +92,12 @@
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Issue Date</p>
                         <p class="font-semibold text-gray-800">{{ $invoice->issue_date->format('F d, Y') }}</p>
                     </div>
-                    <div>
-                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Due Date</p>
-                        <p class="font-semibold text-gray-800">{{ $invoice->due_date->format('F d, Y') }}</p>
-                    </div>
+                    @if($invoice->due_date)
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Due Date</p>
+                            <p class="font-semibold text-gray-800">{{ $invoice->due_date->format('F d, Y') }}</p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -135,23 +139,25 @@
         </div>
 
         <!-- Footer Notes -->
-        <div class="bg-gray-50 p-8 border-t border-gray-100">
-            @if($invoice->notes)
-                <div class="mb-4">
-                    <h5 class="font-bold text-xs text-gray-400 uppercase tracking-wider mb-1">Notes</h5>
-                    <p class="text-sm text-gray-600 whitespace-pre-line">{{ $invoice->notes }}</p>
-                </div>
-            @endif
+        <div class="bg-gray-50 p-8 border-t border-gray-100 flex justify-between items-end">
+            <div class="w-2/3">
+                @if($invoice->notes)
+                    <div class="mb-4">
+                        <h5 class="font-bold text-xs text-gray-400 uppercase tracking-wider mb-1">Notes</h5>
+                        <p class="text-sm text-gray-600 whitespace-pre-line">{{ $invoice->notes }}</p>
+                    </div>
+                @endif
 
-            @if($settings->invoice_note)
-                <div class="text-xs text-gray-500 text-center mt-6 pt-6 border-t border-gray-200">
-                    <p class="whitespace-pre-line">{{ $settings->invoice_note }}</p>
-                </div>
-            @endif
+                @if($settings->invoice_note)
+                    <div class="text-xs text-gray-500 whitespace-pre-line border-t border-gray-200 pt-4 mt-4">
+                        {{ $settings->invoice_note }}
+                    </div>
+                @endif
+            </div>
 
-            <div class="mt-8 flex justify-center">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data={{ urlencode(route('invoice.print', $invoice)) }}"
-                    alt="QR Code" class="opacity-80 mix-blend-multiply">
+            <div class="w-1/3 flex justify-end">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ urlencode(route('filament.sysadmin.resources.invoices.view', $invoice)) }}"
+                    alt="QR Code" class="h-24 w-24 opacity-80 mix-blend-multiply">
             </div>
         </div>
     </div>
