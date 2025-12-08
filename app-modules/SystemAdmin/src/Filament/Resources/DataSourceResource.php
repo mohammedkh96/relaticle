@@ -58,6 +58,11 @@ final class DataSourceResource extends Resource
         return true;
     }
 
+    public static function canView($record): bool
+    {
+        return true;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

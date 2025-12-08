@@ -92,6 +92,10 @@ final class AppServiceProvider extends ServiceProvider
 
     private function configurePolicies(): void
     {
+        // Explicitly register policies for models that need them
+        Gate::policy(\App\Models\DataSource::class, \App\Policies\DataSourcePolicy::class);
+        Gate::policy(\App\Models\Category::class, \App\Policies\CategoryPolicy::class);
+
         Gate::guessPolicyNamesUsing(function (string $modelClass): ?string {
             try {
                 $currentPanelId = Filament::getCurrentPanel()?->getId();
