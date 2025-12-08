@@ -13,7 +13,8 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Table;
-use Filament\Tables\Actions\EditAction;
+use Filament\Actions\EditAction; // Correct namespace for this project
+use Filament\Actions\CreateAction; // Correct namespace for this project
 use Relaticle\SystemAdmin\Filament\Resources\VisitorResource;
 
 class EventVisitorsPage extends Page implements HasTable, HasForms
@@ -78,7 +79,7 @@ class EventVisitorsPage extends Page implements HasTable, HasForms
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('job_title')
+                TextColumn::make('job')
                     ->label('Job Title')
                     ->searchable()
                     ->sortable()
@@ -88,9 +89,6 @@ class EventVisitorsPage extends Page implements HasTable, HasForms
                     ->sortable(),
                 TextColumn::make('phone')
                     ->searchable(),
-                TextColumn::make('company')
-                    ->searchable()
-                    ->sortable(),
             ])
             ->filters([
                 // Add filters if needed
@@ -100,7 +98,7 @@ class EventVisitorsPage extends Page implements HasTable, HasForms
                     ->url(fn(Visitor $record) => VisitorResource::getUrl('edit', ['record' => $record])),
             ])
             ->headerActions([
-                \Filament\Tables\Actions\CreateAction::make('create_visitor')
+                CreateAction::make('create_visitor')
                     ->label('Add Visitor')
                     ->url(fn() => VisitorResource::getUrl('create', ['event' => $this->selectedEventId]))
                     ->hidden(fn() => !$this->selectedEventId),
