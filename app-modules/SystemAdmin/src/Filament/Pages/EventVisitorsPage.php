@@ -42,7 +42,8 @@ class EventVisitorsPage extends Page implements HasTable, HasForms
 
     public function mount(): void
     {
-        $this->selectedEventId = request()->query('event_id');
+        $id = request()->query('event_id');
+        $this->selectedEventId = $id ? (int) $id : null;
     }
 
     public function getTitle(): string

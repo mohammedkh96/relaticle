@@ -62,6 +62,12 @@ final class EventResource extends Resource
                     ->numeric()
                     ->minValue(2000)
                     ->maxValue(2100),
+                TextInput::make('location')
+                    ->maxLength(255),
+                \Filament\Forms\Components\Select::make('status')
+                    ->options(\App\Enums\EventStatus::class)
+                    ->default(\App\Enums\EventStatus::UPCOMING)
+                    ->required(),
                 DatePicker::make('start_date')
                     ->label('Start Date'),
                 DatePicker::make('end_date')
@@ -79,6 +85,12 @@ final class EventResource extends Resource
                 TextColumn::make('year')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('location')
+                    ->searchable()
+                    ->toggleable(),
+                TextColumn::make('status')
+                    ->badge()
+                    ->sortable(),
                 TextColumn::make('start_date')
                     ->date()
                     ->sortable(),

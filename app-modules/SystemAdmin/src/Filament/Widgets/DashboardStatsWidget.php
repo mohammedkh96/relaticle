@@ -34,6 +34,12 @@ class DashboardStatsWidget extends StatsOverviewWidget
                 ->descriptionIcon('heroicon-o-building-storefront')
                 ->color('warning'),
 
+            Stat::make('Total Revenue', \Filament\Support\format_money(\App\Models\Payment::where('status', \App\Enums\PaymentStatus::PAID)->sum('amount'), 'USD'))
+                ->description('Total collected payments')
+                ->descriptionIcon('heroicon-o-currency-dollar')
+                ->color('success')
+                ->chart([7, 2, 10, 3, 15, 4, 17]), // Dummy chart for visuals
+
             Stat::make('Total Visitors', Visitor::count())
                 ->description('All visitors')
                 ->descriptionIcon('heroicon-o-user-group')

@@ -105,6 +105,35 @@ final class ParticipationResource extends Resource
                     ->searchable()
                     ->preload()
                     ->default(fn() => request()->query('event')),
+                \Filament\Schemas\Components\Section::make('Financials')
+                    ->schema([
+                        TextInput::make('booth_size')
+                            ->label('Booth Size (sqm)')
+                            ->maxLength(255),
+                        TextInput::make('booth_price')
+                            ->numeric()
+                            ->prefix('$')
+                            ->default(0),
+                        TextInput::make('discount')
+                            ->numeric()
+                            ->prefix('$')
+                            ->default(0),
+                        TextInput::make('final_price')
+                            ->numeric()
+                            ->prefix('$')
+                            ->helperText('Calculated manually or automatically')
+                            ->default(0),
+                        \Filament\Forms\Components\Select::make('participation_status')
+                            ->options(\App\Enums\ParticipationStatus::class)
+                            ->default(\App\Enums\ParticipationStatus::RESERVED)
+                            ->required(),
+                    ])->columns(2),
+                \Filament\Schemas\Components\Section::make('Documents Confirmation')
+                    ->schema([
+                        \Filament\Forms\Components\Toggle::make('logo_received')->inline(false),
+                        \Filament\Forms\Components\Toggle::make('catalog_received')->inline(false),
+                        \Filament\Forms\Components\Toggle::make('badge_names_received')->inline(false),
+                    ])->columns(3),
                 TextInput::make('stand_number')
                     ->maxLength(255)
                     ->placeholder('e.g., A12, B05'),
@@ -129,6 +158,12 @@ final class ParticipationResource extends Resource
                     ->label('Year'),
                 TextColumn::make('stand_number')
                     ->searchable(),
+                TextColumn::make('participation_status')
+                    ->badge()
+                    ->sortable(),
+                \Filament\Tables\Columns\ToggleColumn::make('logo_received')->label('Logo'),
+                \Filament\Tables\Columns\ToggleColumn::make('catalog_received')->label('Catalog'),
+                \Filament\Tables\Columns\ToggleColumn::make('badge_names_received')->label('Badges'),
                 TextColumn::make('notes')
                     ->limit(50)
                     ->toggleable(),

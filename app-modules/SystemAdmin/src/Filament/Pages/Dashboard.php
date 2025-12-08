@@ -33,6 +33,8 @@ final class Dashboard extends BaseDashboard
     {
         return [
             \Relaticle\SystemAdmin\Filament\Widgets\DashboardStatsWidget::class,
+            \Relaticle\SystemAdmin\Filament\Widgets\RevenueChartWidget::class,
+            \Relaticle\SystemAdmin\Filament\Widgets\LatestInvoicesWidget::class,
         ];
     }
 }

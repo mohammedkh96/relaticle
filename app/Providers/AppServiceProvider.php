@@ -95,6 +95,8 @@ final class AppServiceProvider extends ServiceProvider
         // Explicitly register policies for models that need them
         Gate::policy(\App\Models\DataSource::class, \App\Policies\DataSourcePolicy::class);
         Gate::policy(\App\Models\Category::class, \App\Policies\CategoryPolicy::class);
+        Gate::policy(\App\Models\Invoice::class, \App\Policies\InvoicePolicy::class);
+        Gate::policy(\App\Models\Payment::class, \App\Policies\PaymentPolicy::class);
 
         Gate::guessPolicyNamesUsing(function (string $modelClass): ?string {
             try {

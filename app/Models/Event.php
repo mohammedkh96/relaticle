@@ -16,14 +16,30 @@ class Event extends Model
     protected $fillable = [
         'name',
         'year',
+        'location',
         'start_date',
         'end_date',
+        'status',
     ];
 
-    protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'start_date' => 'date',
+            'end_date' => 'date',
+            'status' => \App\Enums\EventStatus::class,
+        ];
+    }
+
+    public function payments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    public function invoices(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Invoice::class);
+    }
 
     public function participations(): HasMany
     {

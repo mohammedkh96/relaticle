@@ -59,12 +59,65 @@ final class OpportunityResource extends Resource
     {
         return $schema
             ->components([
-                Select::make('team_id')
-                    ->relationship('team', 'name')
-                    ->required(),
-                Select::make('creation_source')
-                    ->options(CreationSource::class)
-                    ->default(CreationSource::WEB),
+                \Filament\Schemas\Components\Section::make()
+                    ->schema([
+                        \Filament\Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->maxLength(255)
+                            ->columnSpanFull(),
+                        Select::make('company_id')
+                            ->relationship('company', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->rules([
+                                fn(\Filament\Forms\Get $get, ?\Illuminate\Database\Eloquent\Model $record) => function (string $attribute, $value, \Closure $fail) use ($get, $record) {
+                                    $eventId = $get('event_id');
+                                    if (!$eventId)
+                                        return;
+
+                                    $query = \App\Models\Opportunity::where('event_id', $eventId)
+                                        ->where('company_id', $value);
+
+                                    if ($record) {
+                                        $query->where('id', '!=', $record->id);
+                                    }
+
+                                    $existing = $query->with('assignee')->first();
+
+                                    if ($existing) {
+                                        $assigneeName = $existing->assignee?->name ?? 'Unknown';
+                                        $fail("This company is already being managed by {$assigneeName}.");
+                                    }
+                                },
+                            ]),
+                        Select::make('event_id')
+                            ->relationship('event', 'name')
+                            ->default(request()->query('event_id'))
+                            ->searchable(),
+                        Select::make('status')
+                            ->options(\App\Enums\OpportunityStatus::class)
+                            ->default(\App\Enums\OpportunityStatus::New)
+                            ->required(),
+                        Select::make('temperature')
+                            ->options(\App\Enums\OpportunityTemperature::class)
+                            ->default(\App\Enums\OpportunityTemperature::Cold)
+                            ->required(),
+                        Select::make('assigned_to')
+                            ->relationship('assignee', 'name')
+                            ->searchable()
+                            ->preload(),
+                        Select::make('team_id')
+                            ->relationship('team', 'name')
+                            ->required()
+                            ->default(auth()->user()->team_id ?? optional(\App\Models\Team::first())->id),
+                        Select::make('creation_source')
+                            ->options(CreationSource::class)
+                            ->default(CreationSource::WEB)
+                            ->disabled()
+                            ->dehydrated(),
+                    ])
+                    ->columns(2),
             ]);
     }
 
@@ -73,9 +126,27 @@ final class OpportunityResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('name')
+                    ->searchable()
+                    ->sortable()
+                    ->weight('bold'),
+                TextColumn::make('company.name')
+                    ->label('Company')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('status')
+                    ->badge()
+                    ->sortable(),
+                TextColumn::make('temperature')
+                    ->badge()
+                    ->sortable(),
+                TextColumn::make('assignee.name')
+                    ->label('Assigned To')
+                    ->toggleable(),
                 TextColumn::make('team.name')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('creation_source')
                     ->badge()
                     ->color(fn(CreationSource $state): string => match ($state) {
@@ -84,7 +155,7 @@ final class OpportunityResource extends Resource
                         CreationSource::IMPORT => 'success',
                     })
                     ->label('Source')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()

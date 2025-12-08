@@ -19,7 +19,46 @@ class Participation extends Model
         'event_id',
         'stand_number',
         'notes',
+        'booth_size',
+        'booth_price',
+        'discount',
+        'final_price',
+        'participation_status',
+        'logo_received',
+        'catalog_received',
+        'badge_names_received',
+        'confirmed_at',
+        'confirmed_by',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'booth_price' => 'decimal:2',
+            'discount' => 'decimal:2',
+            'final_price' => 'decimal:2',
+            'participation_status' => \App\Enums\ParticipationStatus::class,
+            'logo_received' => 'boolean',
+            'catalog_received' => 'boolean',
+            'badge_names_received' => 'boolean',
+            'confirmed_at' => 'datetime',
+        ];
+    }
+
+    public function payments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    public function invoices(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
+    public function confirmer(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\Relaticle\SystemAdmin\Models\SystemAdministrator::class, 'confirmed_by');
+    }
 
     public function company(): BelongsTo
     {

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\CreationSource;
+use App\Enums\OpportunityStatus;
+use App\Enums\OpportunityTemperature;
 use App\Models\Concerns\HasCreator;
 use App\Models\Concerns\HasNotes;
 use App\Models\Concerns\HasTeam;
@@ -19,11 +21,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Relaticle\CustomFields\Models\Concerns\UsesCustomFields;
 use Relaticle\CustomFields\Models\Contracts\HasCustomFields;
+use Relaticle\SystemAdmin\Models\SystemAdministrator;
 use Spatie\EloquentSortable\SortableTrait;
 
 /**
  * @property Carbon|null $deleted_at
  * @property CreationSource $creation_source
+ * @property OpportunityStatus|null $status
+ * @property OpportunityTemperature|null $temperature
+ * @property int|null $event_id
+ * @property int|null $assigned_to
  */
 #[ObservedBy(OpportunityObserver::class)]
 final class Opportunity extends Model implements HasCustomFields
@@ -45,7 +52,15 @@ final class Opportunity extends Model implements HasCustomFields
      * @var list<string>
      */
     protected $fillable = [
+        'name',
+        'team_id',
+        'company_id',
+        'contact_id',
         'creation_source',
+        'event_id',
+        'status',
+        'temperature',
+        'assigned_to',
     ];
 
     /**
@@ -53,6 +68,8 @@ final class Opportunity extends Model implements HasCustomFields
      */
     protected $attributes = [
         'creation_source' => CreationSource::WEB,
+        'status' => OpportunityStatus::New ,
+        'temperature' => OpportunityTemperature::Cold,
     ];
 
     /**
@@ -64,6 +81,8 @@ final class Opportunity extends Model implements HasCustomFields
     {
         return [
             'creation_source' => CreationSource::class,
+            'status' => OpportunityStatus::class,
+            'temperature' => OpportunityTemperature::class,
         ];
     }
 
@@ -81,6 +100,22 @@ final class Opportunity extends Model implements HasCustomFields
     public function contact(): BelongsTo
     {
         return $this->belongsTo(People::class);
+    }
+
+    /**
+     * @return BelongsTo<Event, $this>
+     */
+    public function event(): BelongsTo
+    {
+        return $this->belongsTo(Event::class);
+    }
+
+    /**
+     * @return BelongsTo<SystemAdministrator, $this>
+     */
+    public function assignee(): BelongsTo
+    {
+        return $this->belongsTo(\Relaticle\SystemAdmin\Models\SystemAdministrator::class, 'assigned_to');
     }
 
     /**

@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace Relaticle\SystemAdmin\Filament\Pages;
 
 use App\Models\Event;
-use App\Models\Participation;
+use App\Models\Opportunity;
+use App\Enums\OpportunityStatus;
+use App\Enums\OpportunityTemperature;
 use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\SelectColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -15,24 +19,24 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Table;
 use Filament\Actions\EditAction;
 use Filament\Actions\CreateAction;
-use Relaticle\SystemAdmin\Filament\Resources\ParticipationResource;
+use Relaticle\SystemAdmin\Filament\Resources\OpportunityResource;
 
-class EventParticipantsPage extends Page implements HasTable, HasForms
+class EventOpportunitiesPage extends Page implements HasTable, HasForms
 {
     use InteractsWithTable;
     use InteractsWithForms;
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-building-storefront';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-currency-dollar';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Invest Expo';
 
-    protected static ?string $navigationLabel = 'Participations';
+    protected static ?string $navigationLabel = 'Opportunities';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 4;
 
-    protected static ?string $slug = 'event-participants';
+    protected static ?string $slug = 'event-opportunities';
 
-    protected string $view = 'filament.pages.event-participants';
+    protected string $view = 'filament.pages.event-opportunities';
 
     public ?int $selectedEventId = null;
 
@@ -50,14 +54,26 @@ class EventParticipantsPage extends Page implements HasTable, HasForms
     {
         if ($this->selectedEventId) {
             $event = Event::find($this->selectedEventId);
-            return $event ? "Participations - {$event->name} {$event->year}" : 'Participations';
+            return $event ? "Sales Pipeline - {$event->name} {$event->year}" : 'Sales Pipeline';
         }
-        return 'Select Event for Participations';
+        return 'Select Event for Sales Pipeline';
     }
 
     public function getEvents()
     {
         return Event::orderBy('year', 'desc')->get();
+    }
+
+    public function getOpportunities()
+    {
+        if (!$this->selectedEventId) {
+            return collect();
+        }
+
+        return Opportunity::with(['company', 'assignee'])
+            ->where('event_id', $this->selectedEventId)
+            ->latest()
+            ->get();
     }
 
     public function selectEvent(int $eventId): void
@@ -69,7 +85,7 @@ class EventParticipantsPage extends Page implements HasTable, HasForms
     {
         return $table
             ->query(
-                Participation::query()
+                Opportunity::query()
                     ->when(
                         $this->selectedEventId,
                         fn($query) => $query->where('event_id', $this->selectedEventId),
@@ -80,22 +96,25 @@ class EventParticipantsPage extends Page implements HasTable, HasForms
                 TextColumn::make('company.name')
                     ->label('Company')
                     ->searchable()
+                    ->sortable()
+                    ->weight('bold'),
+
+                SelectColumn::make('status')
+                    ->options(OpportunityStatus::class)
+                    ->selectablePlaceholder(false)
                     ->sortable(),
-                TextColumn::make('stand_number')
-                    ->label('Stand Number')
+
+                SelectColumn::make('temperature')
+                    ->options(OpportunityTemperature::class)
+                    ->sortable(),
+
+                TextColumn::make('assignee.name')
+                    ->label('Assigned To')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('notes')
-                    ->limit(50)
-                    ->tooltip(function (TextColumn $column): ?string {
-                        $state = $column->getState();
-                        if (strlen($state) <= 50) {
-                            return null;
-                        }
-                        return $state;
-                    })
-                    ->searchable(),
+
                 TextColumn::make('created_at')
+                    ->label('Created')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -105,14 +124,19 @@ class EventParticipantsPage extends Page implements HasTable, HasForms
             ])
             ->actions([
                 EditAction::make()
-                    ->url(fn(Participation $record) => ParticipationResource::getUrl('edit', ['record' => $record])),
+                    ->url(fn(Opportunity $record) => OpportunityResource::getUrl('edit', ['record' => $record])),
             ])
             ->headerActions([
-                CreateAction::make('create_participation')
-                    ->label('Add Participation')
-                    ->url(fn() => ParticipationResource::getUrl('create', ['event' => $this->selectedEventId]))
+                CreateAction::make('create_opportunity')
+                    ->label('Add Opportunity')
+                    ->url(fn() => OpportunityResource::getUrl('create', ['event_id' => $this->selectedEventId]))
                     ->hidden(fn() => !$this->selectedEventId),
             ])
+            ->groups([
+                \Filament\Tables\Grouping\Group::make('status')
+                    ->collapsible(),
+            ])
+            ->defaultGroup('status')
             ->bulkActions([
                 //
             ]);

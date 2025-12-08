@@ -65,3 +65,11 @@ Route::get('/team-invitations/{invitation}', [TeamInvitationController::class, '
 Route::get('/discord', function () {
     return redirect()->away(config('services.discord.invite_url'));
 })->name('discord');
+
+// Invoice Printing
+Route::get('/invoices/{invoice}/print', function (\App\Models\Invoice $invoice) {
+    if (!auth('sysadmin')->check()) {
+        abort(403);
+    }
+    return view('invoices.modern', ['invoice' => $invoice]);
+})->name('invoice.print');
