@@ -115,6 +115,6 @@ final class SystemAdminPanelProvider extends PanelProvider
     }
     public function boot(): void
     {
-        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'system-admin');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'system-admin');
     }
 }
