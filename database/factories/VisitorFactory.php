@@ -18,8 +18,9 @@ class VisitorFactory extends Factory
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'phone' => $this->faker->phoneNumber(),
-            'company' => $this->faker->company(),
-            'job_title' => $this->faker->jobTitle(),
+            'job' => $this->faker->jobTitle(),
+            'country' => $this->faker->country(),
+            'city' => $this->faker->city(),
             'event_id' => Event::factory(),
         ];
     }
