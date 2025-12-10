@@ -25,9 +25,9 @@ final class Dashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
-            \Relaticle\SystemAdmin\Filament\Widgets\QuickActionsWidget::class,
             \Relaticle\SystemAdmin\Filament\Widgets\DashboardStatsWidget::class,
             \Relaticle\SystemAdmin\Filament\Widgets\RevenueChartWidget::class,
+            \Relaticle\SystemAdmin\Filament\Widgets\QuickActionsWidget::class,
             \Relaticle\SystemAdmin\Filament\Widgets\LatestInvoicesWidget::class,
         ];
     }
