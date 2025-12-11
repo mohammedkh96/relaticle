@@ -21,12 +21,18 @@ class CreateInvoice extends CreateRecord
                 // Log the payment data to ensure we have it
                 \Illuminate\Support\Facades\Log::info('Creating Invoice from Payment', $payment->toArray());
 
+                $paymentDate = $payment->payment_date instanceof \Carbon\Carbon
+                    ? $payment->payment_date
+                    : \Carbon\Carbon::parse($payment->payment_date);
+
                 $data = [
                     'event_id' => $payment->event_id,
                     'participation_id' => $payment->participation_id,
                     'company_id' => $payment->participation->company_id,
-                    'issue_date' => $payment->payment_date,
+                    'issue_date' => $paymentDate->format('Y-m-d'),
+                    'due_date' => $paymentDate->addDays(14)->format('Y-m-d'),
                     'total_amount' => $payment->amount,
+                    'status' => \App\Enums\InvoiceStatus::SENT,
                     'simple_description' => "Exhibition Space Rental and Participation Fees\nEvent: {$payment->participation->event->name}\nDesignated Stand: {$payment->participation->stand_number}\n\n(Payment Ref: {$payment->transaction_ref})",
                     'notes' => "Linked to Payment #{$payment->id}",
                 ];

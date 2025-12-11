@@ -82,6 +82,7 @@ final class PaymentResource extends Resource
                 TextColumn::make('status')->badge()->sortable(),
                 TextColumn::make('payment_date')->date()->sortable(),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 \Filament\Tables\Filters\SelectFilter::make('status')
                     ->options(PaymentStatus::class)

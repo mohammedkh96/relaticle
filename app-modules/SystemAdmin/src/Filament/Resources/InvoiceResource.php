@@ -120,6 +120,7 @@ final class InvoiceResource extends Resource
                 TextColumn::make('total_amount')->money('USD')->sortable(),
                 TextColumn::make('status')->badge()->sortable(),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 \Filament\Tables\Filters\SelectFilter::make('status')
                     ->options(InvoiceStatus::class)

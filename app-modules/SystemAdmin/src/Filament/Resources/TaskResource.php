@@ -131,6 +131,7 @@ final class TaskResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 SelectFilter::make('assignees')
                     ->relationship('assignees', 'name'),
@@ -169,3 +170,5 @@ final class TaskResource extends Resource
         ];
     }
 }
+
+

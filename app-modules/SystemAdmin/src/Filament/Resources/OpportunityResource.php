@@ -169,6 +169,7 @@ final class OpportunityResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 SelectFilter::make('status')
                     ->options(\App\Enums\OpportunityStatus::class)
@@ -223,3 +224,5 @@ final class OpportunityResource extends Resource
         ];
     }
 }
+
+

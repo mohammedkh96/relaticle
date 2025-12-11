@@ -20,6 +20,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Relaticle\SystemAdmin\Filament\Pages\Dashboard;
 
@@ -50,9 +51,9 @@ final class SystemAdminPanelProvider extends PanelProvider
                 'primary' => Color::Indigo,
             ])
             ->brandName('Invest Expo CRM')
-            ->brandLogo(asset('images/logo.webp'))
-            ->darkModeBrandLogo(asset('images/logo.webp'))
-            ->brandLogoHeight('3rem')
+            ->brandLogo(fn() => view('filament.sysadmin.logo'))
+            ->darkModeBrandLogo(fn() => view('filament.sysadmin.logo'))
+            ->brandLogoHeight('2.5rem')
             ->favicon(asset('images/logo.webp'))
             ->homeUrl(fn(): string => Dashboard::getUrl())
             ->discoverResources(in: base_path('app-modules/SystemAdmin/src/Filament/Resources'), for: 'Relaticle\\SystemAdmin\\Filament\\Resources')
@@ -71,6 +72,8 @@ final class SystemAdminPanelProvider extends PanelProvider
                     ->label('Communications'),
                 NavigationGroup::make()
                     ->label('User Management'),
+                NavigationGroup::make()
+                    ->label('System'),
                 NavigationGroup::make()
                     ->label('Content'),
             ])
@@ -98,6 +101,7 @@ final class SystemAdminPanelProvider extends PanelProvider
                     ]),
             ])
             ->databaseNotifications()
+            ->databaseNotificationsPolling('30s')
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -114,6 +118,7 @@ final class SystemAdminPanelProvider extends PanelProvider
             ])
             ->viteTheme('resources/css/filament/admin/theme.css');
     }
+
     public function boot(): void
     {
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'system-admin');

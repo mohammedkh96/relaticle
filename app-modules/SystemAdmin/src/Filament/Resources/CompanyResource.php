@@ -183,6 +183,7 @@ final class CompanyResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 SelectFilter::make('creation_source')
                     ->label('Creation Source')
@@ -249,3 +250,4 @@ final class CompanyResource extends Resource
         ];
     }
 }
+
