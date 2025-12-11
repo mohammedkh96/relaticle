@@ -104,6 +104,11 @@ final class CategoryResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->headerActions([
+                \Filament\Actions\ExportAction::make()
+                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\CategoryExporter::class)
+                    ->label('Export'),
+            ])
             ->recordActions([
                 EditAction::make(),
                 DeleteAction::make(),

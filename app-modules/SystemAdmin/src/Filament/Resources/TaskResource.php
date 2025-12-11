@@ -133,6 +133,11 @@ final class TaskResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->headerActions([
+                \Filament\Actions\ExportAction::make()
+                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\TaskExporter::class)
+                    ->label('Export'),
+            ])
             ->defaultSort('created_at', 'desc')
             ->filters([
                 SelectFilter::make('assignees')

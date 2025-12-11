@@ -104,6 +104,11 @@ final class DataSourceResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->headerActions([
+                \Filament\Actions\ExportAction::make()
+                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\DataSourceExporter::class)
+                    ->label('Export'),
+            ])
             ->recordActions([
                 EditAction::make(),
                 DeleteAction::make(),

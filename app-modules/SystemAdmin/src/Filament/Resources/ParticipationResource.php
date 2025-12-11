@@ -173,6 +173,11 @@ final class ParticipationResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->headerActions([
+                \Filament\Actions\ExportAction::make()
+                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\ParticipationExporter::class)
+                    ->label('Export'),
+            ])
             ->filters([
                 SelectFilter::make('event_id')
                     ->relationship('event', 'name')

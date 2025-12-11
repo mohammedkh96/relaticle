@@ -85,6 +85,11 @@ final class PaymentResource extends Resource
                 TextColumn::make('payment_date')->date()->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
+            ->headerActions([
+                \Filament\Actions\ExportAction::make()
+                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\PaymentExporter::class)
+                    ->label('Export'),
+            ])
             ->filters([
                 \Filament\Tables\Filters\SelectFilter::make('status')
                     ->options(PaymentStatus::class)

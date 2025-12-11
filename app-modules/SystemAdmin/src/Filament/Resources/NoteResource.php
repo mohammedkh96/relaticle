@@ -79,6 +79,11 @@ final class NoteResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('created_at', 'desc')
+            ->headerActions([
+                \Filament\Actions\ExportAction::make()
+                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\NoteExporter::class)
+                    ->label('Export'),
+            ])
             ->filters([
                 SelectFilter::make('creation_source')
                     ->label('Creation Source')
