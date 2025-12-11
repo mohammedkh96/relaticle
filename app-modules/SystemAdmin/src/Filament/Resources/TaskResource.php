@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Relaticle\SystemAdmin\Filament\Resources;
 
 use App\Enums\CreationSource;
+use App\Filament\Actions\BulkEmailAction;
+use App\Filament\Actions\BulkWhatsAppAction;
 use App\Models\Task;
 use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Cache;
@@ -148,6 +150,8 @@ final class TaskResource extends Resource
                 BulkActionGroup::make([
                     \Filament\Actions\ExportBulkAction::make()
                         ->exporter(\Relaticle\SystemAdmin\Filament\Exports\TaskExporter::class),
+                    BulkEmailAction::make(),
+                    BulkWhatsAppAction::make(),
                     DeleteBulkAction::make(),
                 ]),
             ]);

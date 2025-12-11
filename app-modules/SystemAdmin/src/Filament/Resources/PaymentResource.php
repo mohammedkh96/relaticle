@@ -7,6 +7,8 @@ namespace Relaticle\SystemAdmin\Filament\Resources;
 use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
 use App\Enums\PaymentType;
+use App\Filament\Actions\BulkEmailAction;
+use App\Filament\Actions\BulkWhatsAppAction;
 use App\Models\Payment;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
@@ -112,6 +114,8 @@ final class PaymentResource extends Resource
             ->bulkActions([
                 \Filament\Actions\ExportBulkAction::make()
                     ->exporter(\Relaticle\SystemAdmin\Filament\Exports\PaymentExporter::class),
+                BulkEmailAction::make(),
+                BulkWhatsAppAction::make(),
                 \Filament\Actions\DeleteBulkAction::make(),
             ]);
     }

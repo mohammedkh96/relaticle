@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Relaticle\SystemAdmin\Filament\Resources;
 
 use App\Enums\InvoiceStatus;
+use App\Filament\Actions\BulkEmailAction;
+use App\Filament\Actions\BulkWhatsAppAction;
 use App\Models\Invoice;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
@@ -143,6 +145,8 @@ final class InvoiceResource extends Resource
             ->bulkActions([
                 \Filament\Actions\ExportBulkAction::make()
                     ->exporter(\Relaticle\SystemAdmin\Filament\Exports\InvoiceExporter::class),
+                BulkEmailAction::make(),
+                BulkWhatsAppAction::make(),
                 \Filament\Actions\DeleteBulkAction::make(),
             ]);
     }
