@@ -4,22 +4,28 @@ declare(strict_types=1);
 
 namespace Relaticle\SystemAdmin\Filament\Pages;
 
-use Filament\Actions\Action;
 use Filament\Pages\Dashboard as BaseDashboard;
 
 final class Dashboard extends BaseDashboard
 {
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-home';
 
-    protected ?string $heading = 'Invest Expo CRM Dashboard';
+    protected ?string $heading = 'Dashboard';
 
-    protected ?string $subheading = 'Manage your events, companies, participations, and visitors.';
+    protected ?string $subheading = 'Welcome to Invest Expo CRM - Overview of your events and exhibitors';
 
     protected static ?string $navigationLabel = 'Dashboard';
 
     public function getColumns(): int|array
     {
-        return 2;
+        return [
+            'default' => 1,
+            'sm' => 2,
+            'md' => 2,
+            'lg' => 2,
+            'xl' => 2,
+            '2xl' => 2,
+        ];
     }
 
     public function getWidgets(): array
@@ -27,7 +33,6 @@ final class Dashboard extends BaseDashboard
         return [
             \Relaticle\SystemAdmin\Filament\Widgets\DashboardStatsWidget::class,
             \Relaticle\SystemAdmin\Filament\Widgets\RevenueChartWidget::class,
-            \Relaticle\SystemAdmin\Filament\Widgets\QuickActionsWidget::class,
             \Relaticle\SystemAdmin\Filament\Widgets\LatestInvoicesWidget::class,
         ];
     }

@@ -140,6 +140,8 @@ final class InvoiceResource extends Resource
                     ->openUrlInNewTab(),
             ])
             ->bulkActions([
+                \Filament\Actions\ExportBulkAction::make()
+                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\InvoiceExporter::class),
                 \Filament\Actions\DeleteBulkAction::make(),
             ]);
     }

@@ -109,6 +109,8 @@ final class DataSourceResource extends Resource
                 DeleteAction::make(),
             ])
             ->toolbarActions([
+                \Filament\Actions\ExportBulkAction::make()
+                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\DataSourceExporter::class),
                 DeleteBulkAction::make(),
             ])
             ->defaultSort('name');

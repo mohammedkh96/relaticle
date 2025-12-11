@@ -62,7 +62,7 @@ final class NoteResource extends Resource
                     ->sortable(),
                 TextColumn::make('creation_source')
                     ->badge()
-                    ->color(fn (CreationSource $state): string => match ($state) {
+                    ->color(fn(CreationSource $state): string => match ($state) {
                         CreationSource::WEB => 'info',
                         CreationSource::SYSTEM => 'warning',
                         CreationSource::IMPORT => 'success',
@@ -90,6 +90,8 @@ final class NoteResource extends Resource
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    \Filament\Actions\ExportBulkAction::make()
+                        ->exporter(\Relaticle\SystemAdmin\Filament\Exports\NoteExporter::class),
                     DeleteBulkAction::make(),
                 ]),
             ]);

@@ -109,6 +109,8 @@ final class CategoryResource extends Resource
                 DeleteAction::make(),
             ])
             ->toolbarActions([
+                \Filament\Actions\ExportBulkAction::make()
+                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\CategoryExporter::class),
                 DeleteBulkAction::make(),
             ])
             ->defaultSort('name');

@@ -4,60 +4,58 @@ declare(strict_types=1);
 
 namespace Relaticle\SystemAdmin\Policies;
 
-use Relaticle\SystemAdmin\Enums\SystemAdministratorRole;
 use Relaticle\SystemAdmin\Models\SystemAdministrator;
 
 final class CompanyPolicy
 {
     public function viewAny(): bool
     {
-        return true;
-        // System admins can view all companies across all tenants
+        return true; // All roles can view
     }
 
     public function view(): bool
     {
-        return true;
-        // System admins can view any specific company
+        return true; // All roles can view
     }
 
     public function create(SystemAdministrator $admin): bool
     {
-        return $admin->role === SystemAdministratorRole::SuperAdministrator;
+        return $admin->role->canCreate();
     }
 
     public function update(SystemAdministrator $admin): bool
     {
-        return $admin->role === SystemAdministratorRole::SuperAdministrator;
+        return $admin->role->canEdit();
     }
 
     public function delete(SystemAdministrator $admin): bool
     {
-        return $admin->role === SystemAdministratorRole::SuperAdministrator;
+        return $admin->role->canDelete();
     }
 
     public function deleteAny(SystemAdministrator $admin): bool
     {
-        return $admin->role === SystemAdministratorRole::SuperAdministrator;
+        return $admin->role->canDelete();
     }
 
     public function restore(SystemAdministrator $admin): bool
     {
-        return $admin->role === SystemAdministratorRole::SuperAdministrator;
+        return $admin->role->canDelete();
     }
 
     public function forceDelete(SystemAdministrator $admin): bool
     {
-        return $admin->role === SystemAdministratorRole::SuperAdministrator;
+        return $admin->role->isSuperAdmin();
     }
 
     public function forceDeleteAny(SystemAdministrator $admin): bool
     {
-        return $admin->role === SystemAdministratorRole::SuperAdministrator;
+        return $admin->role->isSuperAdmin();
     }
 
     public function restoreAny(SystemAdministrator $admin): bool
     {
-        return $admin->role === SystemAdministratorRole::SuperAdministrator;
+        return $admin->role->canDelete();
     }
 }
+

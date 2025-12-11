@@ -15,12 +15,35 @@ final class SystemAdministratorSeeder extends Seeder
      */
     public function run(): void
     {
+        // Super Administrator - full access
         SystemAdministrator::firstOrCreate(
             ['email' => 'sysadmin@relaticle.com'],
             [
                 'name' => 'System Administrator',
                 'password' => bcrypt('password'),
                 'role' => SystemAdministratorRole::SuperAdministrator,
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // Administrator - can create/edit but not delete
+        SystemAdministrator::firstOrCreate(
+            ['email' => 'admin@investexpo.com'],
+            [
+                'name' => 'Admin',
+                'password' => bcrypt('password'),
+                'role' => SystemAdministratorRole::Administrator,
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // Viewer - read-only access
+        SystemAdministrator::firstOrCreate(
+            ['email' => 'viewer@investexpo.com'],
+            [
+                'name' => 'Viewer',
+                'password' => bcrypt('password'),
+                'role' => SystemAdministratorRole::Viewer,
                 'email_verified_at' => now(),
             ]
         );

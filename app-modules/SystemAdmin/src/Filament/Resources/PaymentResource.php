@@ -109,6 +109,8 @@ final class PaymentResource extends Resource
                     ])),
             ])
             ->bulkActions([
+                \Filament\Actions\ExportBulkAction::make()
+                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\PaymentExporter::class),
                 \Filament\Actions\DeleteBulkAction::make(),
             ]);
     }

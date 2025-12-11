@@ -197,6 +197,8 @@ final class OpportunityResource extends Resource
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    \Filament\Actions\ExportBulkAction::make()
+                        ->exporter(\Relaticle\SystemAdmin\Filament\Exports\OpportunityExporter::class),
                     DeleteBulkAction::make(),
                 ]),
             ]);

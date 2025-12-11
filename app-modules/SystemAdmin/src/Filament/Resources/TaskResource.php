@@ -145,6 +145,8 @@ final class TaskResource extends Resource
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    \Filament\Actions\ExportBulkAction::make()
+                        ->exporter(\Relaticle\SystemAdmin\Filament\Exports\TaskExporter::class),
                     DeleteBulkAction::make(),
                 ]),
             ]);

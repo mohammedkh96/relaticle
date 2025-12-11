@@ -50,9 +50,10 @@ final class SystemAdminPanelProvider extends PanelProvider
                 'primary' => Color::Indigo,
             ])
             ->brandName('Invest Expo CRM')
-            ->brandLogo(url('/images/logo.webp'))
-            ->darkModeBrandLogo(url('/images/logo.webp'))
+            ->brandLogo(asset('images/logo.webp'))
+            ->darkModeBrandLogo(asset('images/logo.webp'))
             ->brandLogoHeight('3rem')
+            ->favicon(asset('images/logo.webp'))
             ->homeUrl(fn(): string => Dashboard::getUrl())
             ->discoverResources(in: base_path('app-modules/SystemAdmin/src/Filament/Resources'), for: 'Relaticle\\SystemAdmin\\Filament\\Resources')
             ->discoverPages(in: base_path('app-modules/SystemAdmin/src/Filament/Pages'), for: 'Relaticle\\SystemAdmin\\Filament\\Pages')

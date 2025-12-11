@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Relaticle\SystemAdmin\Policies;
 
 use Illuminate\Auth\Access\Response;
-use Relaticle\SystemAdmin\Enums\SystemAdministratorRole;
 use Relaticle\SystemAdmin\Models\SystemAdministrator;
 
 final class SystemAdministratorPolicy
@@ -22,18 +21,20 @@ final class SystemAdministratorPolicy
 
     public function create(SystemAdministrator $admin): Response
     {
-        return $admin->role === SystemAdministratorRole::SuperAdministrator
+        return $admin->role->canManageAdmins()
             ? Response::allow()
             : Response::deny('Only Super Administrators can create new system administrators.');
     }
 
     public function update(SystemAdministrator $admin, SystemAdministrator $systemAdmin): Response
     {
-        if ($admin->role === SystemAdministratorRole::SuperAdministrator) {
+        // Super admins can edit anyone
+        if ($admin->role->canManageAdmins()) {
             return Response::allow();
         }
 
-        if ($admin->id === $systemAdmin->id) {
+        // Admins can only edit their own account
+        if ($admin->id === $systemAdmin->id && $admin->role->canEdit()) {
             return Response::allow();
         }
 
@@ -46,7 +47,7 @@ final class SystemAdministratorPolicy
             return Response::deny('You cannot delete your own account.');
         }
 
-        if ($admin->role === SystemAdministratorRole::SuperAdministrator) {
+        if ($admin->role->canManageAdmins()) {
             return Response::allow();
         }
 
@@ -55,12 +56,12 @@ final class SystemAdministratorPolicy
 
     public function deleteAny(SystemAdministrator $admin): bool
     {
-        return $admin->role === SystemAdministratorRole::SuperAdministrator;
+        return $admin->role->canManageAdmins();
     }
 
     public function restore(SystemAdministrator $admin): bool
     {
-        return $admin->role === SystemAdministratorRole::SuperAdministrator;
+        return $admin->role->canManageAdmins();
     }
 
     public function forceDelete(SystemAdministrator $admin, SystemAdministrator $systemAdmin): Response
@@ -69,18 +70,18 @@ final class SystemAdministratorPolicy
             return Response::deny('You cannot permanently delete your own account.');
         }
 
-        return $admin->role === SystemAdministratorRole::SuperAdministrator
+        return $admin->role->canManageAdmins()
             ? Response::allow()
             : Response::deny('Only Super Administrators can permanently delete system administrators.');
     }
 
     public function forceDeleteAny(SystemAdministrator $admin): bool
     {
-        return $admin->role === SystemAdministratorRole::SuperAdministrator;
+        return $admin->role->canManageAdmins();
     }
 
     public function restoreAny(SystemAdministrator $admin): bool
     {
-        return $admin->role === SystemAdministratorRole::SuperAdministrator;
+        return $admin->role->canManageAdmins();
     }
 }

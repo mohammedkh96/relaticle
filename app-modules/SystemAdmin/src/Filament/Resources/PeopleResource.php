@@ -112,6 +112,8 @@ final class PeopleResource extends Resource
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    \Filament\Actions\ExportBulkAction::make()
+                        ->exporter(\Relaticle\SystemAdmin\Filament\Exports\PeopleExporter::class),
                     DeleteBulkAction::make(),
                 ]),
             ]);
