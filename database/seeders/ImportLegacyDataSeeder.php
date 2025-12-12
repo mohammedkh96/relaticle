@@ -131,6 +131,63 @@ class ImportLegacyDataSeeder extends Seeder
                             ]);
                         }
                     }
+                    // 4. Link to Event (Create Participation)
+                    // Extract year from source string (e.g., "CSV: 2019", "Excel: Invest Expo 2019")
+                    $source = $record['source'] ?? '';
+                    preg_match('/\b(20\d{2})\b/', $source, $matches);
+                    $year = $matches[1] ?? null;
+
+                    if ($year) {
+                        $eventName = "Invest Expo $year";
+
+                        // Find or Create Event
+                        $event = \App\Models\Event::firstOrCreate(
+                            ['year' => $year],
+                            [
+                                'name' => $eventName,
+                                'status' => \App\Enums\EventStatus::UPCOMING, // Default status
+                                'start_date' => "$year-01-01", // Placeholder dates
+                                'end_date' => "$year-12-31",
+                            ]
+                        );
+
+                        // Check if participation already exists
+                        $participationExists = \App\Models\Participation::where('company_id', $company->id)
+                            ->where('event_id', $event->id)
+                            ->exists();
+
+                        if (!$participationExists) {
+                            \App\Models\Participation::create([
+                                'company_id' => $company->id,
+                                'event_id' => $event->id,
+                                'participation_status' => \App\Enums\ParticipationStatus::CONFIRMED, // Assume they participated
+                                'notes' => "Imported from $source",
+                            ]);
+                        }
+                    }
+
+                    // 5. Create Opportunity (if marked as such)
+                    if (!empty($record['is_opportunity'])) {
+                        $oppName = "Business Card Import: " . ($companyName ?? $record['person_name'] ?? 'Unknown');
+
+                        // Prevent duplicates
+                        $oppExists = \App\Models\Opportunity::where('company_id', $company->id)
+                            ->where('name', $oppName)
+                            ->exists();
+
+                        if (!$oppExists) {
+                            \App\Models\Opportunity::create([
+                                'name' => $oppName,
+                                'company_id' => $company->id,
+                                'contact_id' => $person?->id,
+                                'team_id' => $teamId,
+                                'creator_id' => $user->id,
+                                'creation_source' => CreationSource::IMPORT,
+                                'status' => \App\Enums\OpportunityStatus::New ,
+                                'temperature' => \App\Enums\OpportunityTemperature::Cold,
+                            ]);
+                        }
+                    }
                 });
             } catch (\Exception $e) {
                 // Log checking

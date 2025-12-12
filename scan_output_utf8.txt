@@ -1,0 +1,112 @@
+All Sheet Names: ['Invest Expo 2019', 'Invest Expo 2021', 'Invest Expo 2022', 'Invest Expo 2023', 'Invest Expo 2025', 'Ninawa 2023', 'Luxury Event Baghdad2025', 'Noor ', 'my data - Maria ', 'INVEST2025-Business Cards-Dahat', 'Bussines card - Mr Dilon', 'IPS International Properrty Sho', 'Insurance Companies- Maria ', 'AqarFair-Dahat', 'Qatar-Dahat', 'Business Cards', 'Int.data Dahat&Hilda', 'Cyprus & Jordan int. data-Dahat', 'Int.Event organizers-Dahat', 'Cityscape2025-Dahat', 'Jordanian Co-Dahat', 'IPS-2025-Dahat', 'Real Estate Future Forum', 'CITY SCAPE 2024- Maria ', 'ECO Build IQ', 'Solar System Companies', 'Construction', 'Projects', 'IRIES', 'Engineering Co.', 'Real Estate Co.']
+
+--- Analyzing Sheet: Invest Expo 2019 ---
+Header found at row 1: [nan, 'Tel', 'Company Name', 'person name', 'Phone Number ', 'Email', 'Note', 'Address']
+
+--- Analyzing Sheet: Invest Expo 2021 ---
+Header found at row 1: [nan, 'Tel', 'Company Name', 'person name', 'Phone Number ', 'Email', 'Note', 'Address']
+
+--- Analyzing Sheet: Invest Expo 2022 ---
+Header found at row 1: [nan, 'Tel', 'Company Name', 'person name', 'Phone Number', 'Email', 'Note', 'sqm', 'area code']
+
+--- Analyzing Sheet: Invest Expo 2023 ---
+Header found at row 1: [nan, 'Tel', 'Company Name', 'Location', 'Person name ', 'Phone number', 'Email', 'Participating type', 'Square meters']
+
+--- Analyzing Sheet: Invest Expo 2025 ---
+WARNING: Could not find 'Company' in first 20 rows.
+First 5 rows for inspection:
+              0                 1             2
+0         Co.N.  Person in charge  phone number
+1        Empire             Hezha    7509111199
+2   North light             Karam    7504375150
+3      Var Park             Payam    7508773067
+4  Nice Village              Rodi    7504486291
+
+--- Analyzing Sheet: Ninawa 2023 ---
+Header found at row 1: [nan, 'Tel', 'Company Name', 'Location', 'Person name ', 'Phone number', 'Email', 'Address']
+
+--- Analyzing Sheet: Luxury Event Baghdad2025 ---
+Header found at row 7: ['No.', 'Karmand Company', 'Gold', 'Mr.Osama', '750 445 5494', '$6,500', nan, nan]
+
+--- Analyzing Sheet: Noor  ---
+WARNING: Could not find 'Company' in first 20 rows.
+First 5 rows for inspection:
+Empty DataFrame
+Columns: []
+Index: []
+
+--- Analyzing Sheet: my data - Maria  ---
+Header found at row 1: [nan, 'Company Name', 'person name', 'Phone Number ', 'Email', 'Note', 'Address']
+
+--- Analyzing Sheet: INVEST2025-Business Cards-Dahat ---
+Header found at row 0: ['Red', 'Company Name', 'Person name', 'Position', 'Phone Number ', 'Email', 'Address', 'Note']
+
+--- Analyzing Sheet: Bussines card - Mr Dilon ---
+Header found at row 1: [nan, 'Tel', 'Company Name', 'person name', 'Phone Number ', 'Email', 'Note', 'Address']
+
+--- Analyzing Sheet: IPS International Properrty Sho ---
+Header found at row 1: [nan, 'Tel', 'Company Name', 'person name', 'Phone Number ', 'Email', nan, 'Note', 'Address']
+
+--- Analyzing Sheet: Insurance Companies- Maria  ---
+Header found at row 1: ['Company name ', 'person name', 'Phone NO', 'Email', 'Website', 'Note ', 'sent?', 'Note', 'Website & Adress']
+
+--- Analyzing Sheet: AqarFair-Dahat ---
+Header found at row 0: ['📇 Company Contact Information', nan, nan, nan, nan]
+
+--- Analyzing Sheet: Qatar-Dahat ---
+Header found at row 0: ['Company', 'Sector', 'Website', 'Phone', 'Email', nan, nan, nan, nan]
+
+--- Analyzing Sheet: Business Cards ---
+Header found at row 0: ['Company', 'Contact Person', 'Sector', 'Website', 'Phone', 'Email']
+
+--- Analyzing Sheet: Int.data Dahat&Hilda ---
+Header found at row 0: ['Sector', 'Subcategory', 'Company Name', 'Contact Person', 'Email', 'Phone', 'Website', 'Country', 'Booth Number', 'Notes', 'Column 1', 'Column 2', 'Column 3']
+
+--- Analyzing Sheet: Cyprus & Jordan int. data-Dahat ---
+Header found at row 1: ['No.', 'Company Name', 'Location', 'Email', 'Phone / WhatsApp']
+
+--- Analyzing Sheet: Int.Event organizers-Dahat ---
+WARNING: Could not find 'Company' in first 20 rows.
+First 5 rows for inspection:
+                0                         1         2               3               4                                                            5                  6                                                  7        8      9
+0  Organizer Name                Event Name  Location      Event Date  Contact Person                                                        Email              Phone                                            Website  Country  Notes
+1             NaN        PropTech Week MENA       NaN             NaN          Vidhya                                        Vidhya.suman@dwtc.com   + 971 4 306 4316  https://www.proptechweekmena.com/why-sponsor.html    Dubai    NaN
+2             NaN                       NaN       NaN             NaN             NaN                                                          NaN                NaN                       https://cityscapeglobal.com/      NaN    NaN
+3             NaN                  Eventify    Jeddah  Multiple dates             NaN                                  info@eventify-organizer.com       966580080464                             eventify-organizer.com   Saudia    NaN
+4             NaN  Global Banking & Markets       NaN             NaN             NaN  marketing@gfcmediagroup.com  Alex.Johnson@GFCMediaGroup.com                NaN            https://gbandm.com/clients-we-work-with      NaN    NaN
+
+--- Analyzing Sheet: Cityscape2025-Dahat ---
+Header found at row 4: ['Bahrain Marina Development Company', 'Bahrain', 'Residential', nan, 'info@bahrainmarina.bh', 'tel:00973 17 130 140\n', 'https://bahrainmarina.bh/about/', nan]
+
+--- Analyzing Sheet: Jordanian Co-Dahat ---
+Header found at row 1: ['Company Name', 'website', 'Email', 'Phone', 'Location', 'Contacted?', 'Comany Name', 'Contact Person', 'Email', 'Phone', 'Contacted?', nan]
+
+--- Analyzing Sheet: IPS-2025-Dahat ---
+Header found at row 1: [nan, 'Tel', 'Company', 'person name', 'Phone Number ', 'Email', nan, 'Note', 'Website & Adress']
+
+--- Analyzing Sheet: Real Estate Future Forum ---
+Header found at row 1: [nan, 'Company Name', 'person name', 'Phone Number ', 'Email']
+
+--- Analyzing Sheet: CITY SCAPE 2024- Maria  ---
+Header found at row 1: [nan, 'Tel', 'Company Name', 'person name', 'Phone Number ', 'Email', 'Emailed?']
+
+--- Analyzing Sheet: ECO Build IQ ---
+Header found at row 1: [nan, 'Tel', 'Company Name', 'person name', 'Phone Number ', 'Email', 'Note', ' Contact Date ', 'Address']
+
+--- Analyzing Sheet: Solar System Companies ---
+Header found at row 1: [nan, 'Tel', 'Company Name', 'person name', 'Phone Number ', 'Email', nan, 'Country ']
+
+--- Analyzing Sheet: Construction ---
+Header found at row 1: [nan, 'Tel', 'Company Name', 'person name', 'Phone Number ', 'Email', 'note :', 'Address']
+
+--- Analyzing Sheet: Projects ---
+Header found at row 1: [nan, 'Tel', 'Company Name', 'person name', 'Phone Number ', 'Contacted?', 'note :', 'Address']
+
+--- Analyzing Sheet: IRIES ---
+Header found at row 1: ['Company Name', 'Phone Number(s)', 'Email Address(es)', 'Website', 'Country']
+
+--- Analyzing Sheet: Engineering Co. ---
+Header found at row 1: [nan, 'Tel', 'Company Name', 'person name', 'Phone Number ', 'contacacted', 'Note', 'Address']
+
+--- Analyzing Sheet: Real Estate Co. ---
+Header found at row 1: [nan, 'Tel', 'Company Name', 'person name', 'Phone Number ', 'Email', 'Note', 'Address']

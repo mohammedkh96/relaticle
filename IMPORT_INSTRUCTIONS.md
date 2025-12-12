@@ -3,21 +3,19 @@
 I have successfully imported all data from **"Invest Expo DaTA - Invest Expo 2019.csv"** and **"Invest Expo DaTA.xlsx"** into your database.
 
 ## Summary of Work
-1.  **Data Extraction**: I created a Python script (`convert_data.py`) to parse both the CSV and Excel files. This handled the messy formatting and combined everything into a clean JSON format.
-2.  **Database Seeding**: I created a new Laravel Seeder `ImportLegacyDataSeeder.php` that reads the clean JSON and populates your database.
-3.  **Schema Compliance**: As requested, I **did not change your database structure**.
-    -   **Companies**: Mapped to the `companies` table (Name, Address, Phone).
-    -   **People**: Mapped to the `people` table.
-    -   **Contact Details**: Since the `people` table only has a `name` column, I stored the Person's **Phone** and **Email** in the **Notes** section attached to that person (or company).
-4.  **Error Fixes**:
-    -   Fixed `Class "Filament\Tables\Actions\ExportAction" not found` by switching to `Filament\Actions\ExportAction`.
-    -   Added `ReimportDataSeeder` to clean old data before importing.
+1.  **Data Extraction**: I updated `convert_data.py` to handle **all 30+ sheets**, using strict header detection to avoid errors and expanded column mapping for phone numbers.
+2.  **Database Seeding**: `ReimportDataSeeder.php` performs a **full reset** (truncating Events, Companies, People, etc.) and re-imports distinct data.
+3.  **Schema Compliance**: No database schema changes were made.
+4.  **Improvements (Final Run)**:
+    -   **Company Phones**: Added support for columns like "Mobile", "Contact No", "Phone / WhatsApp". Fixed issue with "FALSE" valus.
+    -   **Opportunities**: "Business Card" sheets are automatically imported as Opportunities.
+    -   **Accuracy**: Stricter header detection logic ensures data is aligned correctly.
 
 ## Files Created
--   `convert_data.py`: Python script to read your Excel/CSV files and generate `invest_expo_data.json`.
--   `invest_expo_data.json`: Intermediate data file containing all 1178 records.
--   `database/seeders/ImportLegacyDataSeeder.php`: The PHP Seeder logic.
--   `database/seeders/ReimportDataSeeder.php`: Helper seeder to truncate tables and run import.
+-   `convert_data.py`: Python script to read Excel/CSV and generate `invest_expo_data.json`.
+-   `invest_expo_data.json`: Intermediate data file containing **4424 verified records**.
+-   `database/seeders/ImportLegacyDataSeeder.php`: Main PHP Seeder logic.
+-   `database/seeders/ReimportDataSeeder.php`: Helper seeder that **TRUNCATES ALL DATA** and runs the import.
 
 ## How to Run Again
 If you update the Excel or CSV files, follow these steps to re-import:
@@ -27,11 +25,15 @@ If you update the Excel or CSV files, follow these steps to re-import:
     ```powershell
     python convert_data.py
     ```
-3.  **Run Clean Import** (Truncates tables and Imports):
+3.  **Run Full Reset & Import**:
+    > ⚠️ **passed**: This commands DELETES all events, companies, opportunities, and people before importing.
     ```powershell
     php artisan db:seed --class=ReimportDataSeeder
     ```
-    *Note: This will delete existing visitors, companies, and people before importing.*
 
 ## Verification
-The import process processed **1178 records**. You can verify this by checking the `companies` and `people` tables in your Admin Panel.
+-   **Total Records**: 4424
+-   **Events**: Check `sysadmin/events` (e.g., "Invest Expo 2025").
+-   **Exhibitors**: Check `sysadmin/participations`.
+-   **Opportunities**: Check `sysadmin/opportunities`.
+-   **Phones**: Check Company details; phone numbers should now be visible.
