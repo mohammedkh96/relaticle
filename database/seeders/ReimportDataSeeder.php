@@ -22,6 +22,8 @@ class ReimportDataSeeder extends Seeder
         DB::table('participations')->truncate();
         DB::table('people')->truncate();
         DB::table('companies')->truncate();
+        DB::table('notes')->truncate();
+        DB::table('noteables')->truncate();
 
         Schema::enableForeignKeyConstraints();
 

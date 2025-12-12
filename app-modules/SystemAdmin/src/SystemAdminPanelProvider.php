@@ -51,9 +51,6 @@ final class SystemAdminPanelProvider extends PanelProvider
                 'primary' => Color::Indigo,
             ])
             ->brandName('Invest Expo CRM')
-            ->brandLogo(fn() => view('filament.sysadmin.logo'))
-            ->darkModeBrandLogo(fn() => view('filament.sysadmin.logo'))
-            ->brandLogoHeight('2.5rem')
             ->favicon(asset('images/logo.webp'))
             ->homeUrl(fn(): string => Dashboard::getUrl())
             ->discoverResources(in: base_path('app-modules/SystemAdmin/src/Filament/Resources'), for: 'Relaticle\\SystemAdmin\\Filament\\Resources')

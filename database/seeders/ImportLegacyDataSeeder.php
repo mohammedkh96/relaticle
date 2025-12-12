@@ -15,6 +15,24 @@ use Illuminate\Support\Facades\File;
 
 class ImportLegacyDataSeeder extends Seeder
 {
+    private function safeString(?string $str, int $limit = 250): ?string
+    {
+        if (!$str)
+            return null;
+        $str = trim($str);
+        // Ensure UTF-8
+        $str = mb_convert_encoding($str, 'UTF-8', 'UTF-8');
+        return mb_substr($str, 0, $limit);
+    }
+
+    private function logError(string $context, string $errorMessage, array $record): void
+    {
+        $logMessage = date('Y-m-d H:i:s') . " - {$context}: {$errorMessage}\n";
+        // Optionally log record data if needed, but keep it brief or only on severe errors
+        // $logMessage .= "Data: " . json_encode($record) . "\n"; 
+        File::append(base_path('import_errors.log'), $logMessage);
+    }
+
     public function run(): void
     {
         $jsonPath = base_path('invest_expo_data.json');
@@ -33,14 +51,12 @@ class ImportLegacyDataSeeder extends Seeder
 
         $this->command->info("Found " . count($data) . " records. Starting import...");
 
-        // Get default user and team (Admin)
         $user = User::first();
         if (!$user) {
             $this->command->error("No users found. Please seed users first.");
             return;
         }
 
-        // Assuming user has a team or we can get the first team
         $teamId = $user->current_team_id ?? $user->teams()->first()?->id ?? \App\Models\Team::first()?->id;
 
         if (!$teamId) {
@@ -51,8 +67,11 @@ class ImportLegacyDataSeeder extends Seeder
         $bar = $this->command->getOutput()->createProgressBar(count($data));
         $bar->start();
 
+        File::put(base_path('import_errors.log'), "Import Log Started: " . now() . "\n");
+
         foreach ($data as $record) {
-            $companyName = trim($record['company_name'] ?? '');
+            $companyName = $this->safeString($record['company_name'] ?? '');
+
             if (empty($companyName)) {
                 $bar->advance();
                 continue;
@@ -60,122 +79,117 @@ class ImportLegacyDataSeeder extends Seeder
 
             try {
                 DB::transaction(function () use ($record, $companyName, $user, $teamId) {
-                    // 1. Create/Find Company
+                    // 1. Create/Find Company - TRUNCATED SAFE
                     $company = Company::firstOrCreate(
                         ['name' => $companyName],
                         [
                             'team_id' => $teamId,
                             'creator_id' => $user->id,
                             'creation_source' => CreationSource::IMPORT,
-                            'address' => $record['address'] ?? null,
-                            'phone' => $record['company_tel'] ?? null,
+                            'address' => $this->safeString($record['address'] ?? null, 250),
+                            'phone' => $this->safeString($record['company_tel'] ?? null, 50),
                         ]
                     );
 
-                    // Update phone/address if empty and we have new data
                     if (empty($company->address) && !empty($record['address'])) {
-                        $company->update(['address' => $record['address']]);
+                        $company->update(['address' => $this->safeString($record['address'], 250)]);
                     }
                     if (empty($company->phone) && !empty($record['company_tel'])) {
-                        $company->update(['phone' => $record['company_tel']]);
+                        $company->update(['phone' => $this->safeString($record['company_tel'], 50)]);
                     }
 
-                    // 2. Create/Find Person
+                    // 2. Person
                     $person = null;
                     if (!empty($record['person_name'])) {
-                        $person = People::firstOrCreate(
-                            [
-                                'name' => trim($record['person_name']),
-                                'company_id' => $company->id
-                            ],
-                            [
-                                'team_id' => $teamId,
-                                'creator_id' => $user->id,
-                                'creation_source' => CreationSource::IMPORT,
-                            ]
-                        );
+                        $personName = $this->safeString($record['person_name'], 150);
+                        if ($personName) {
+                            $person = People::firstOrCreate(
+                                [
+                                    'name' => $personName,
+                                    'company_id' => $company->id
+                                ],
+                                [
+                                    'team_id' => $teamId,
+                                    'creator_id' => $user->id,
+                                    'creation_source' => CreationSource::IMPORT,
+                                ]
+                            );
+                        }
                     }
 
-                    // 3. Add Contact Info as Notes (since we can't change DB schema)
+                    // 3. Notes
                     $contactNoteLines = [];
-                    if (!empty($record['person_phone'])) {
-                        $contactNoteLines[] = "Phone: " . $record['person_phone'];
-                    }
-                    if (!empty($record['email'])) {
-                        $contactNoteLines[] = "Email: " . $record['email'];
-                    }
-                    if (!empty($record['note'])) {
-                        $contactNoteLines[] = "Note: " . $record['note'];
-                    }
+                    if (!empty($record['person_phone']))
+                        $contactNoteLines[] = "Phone: " . $this->safeString($record['person_phone'], 100);
+                    if (!empty($record['email']))
+                        $contactNoteLines[] = "Email: " . $this->safeString($record['email'], 150);
+                    if (!empty($record['note']))
+                        $contactNoteLines[] = "Note: " . $this->safeString($record['note'], 500);
 
                     if (!empty($contactNoteLines)) {
                         $noteContent = implode("\n", $contactNoteLines);
-                        $sourceLine = "Source: " . ($record['source'] ?? 'Import');
-                        $fullNote = "{$sourceLine}\n{$noteContent}";
+                        $sourceLine = "Source: " . $this->safeString($record['source'] ?? 'Import', 100);
+                        // Combine and truncate strictly to 250 chars as 'title' is VARCHAR(255)
+                        $fullNote = $this->safeString("{$sourceLine}\n{$noteContent}", 250);
 
-                        // Attach note to Person if exists, otherwise Company
                         $target = $person ?? $company;
 
-                        // Check if duplicate note exists to avoid spamming runs
-                        // Simple check: same content
-                        $exists = $target->notes()
-                            ->where('content', 'LIKE', "%{$noteContent}%")
-                            ->exists();
+                        try {
+                            // Check exact match on title since we truncated
+                            $exists = $target->notes()
+                                ->where('title', $fullNote)
+                                ->exists();
 
-                        if (!$exists) {
-                            $target->notes()->create([
-                                'content' => $fullNote,
-                                'team_id' => $teamId,
-                                'creator_id' => $user->id,
-                                'creation_source' => CreationSource::IMPORT,
-                            ]);
+                            if (!$exists) {
+                                $target->notes()->create([
+                                    'title' => $fullNote,
+                                    'team_id' => $teamId,
+                                    'creator_id' => $user->id,
+                                    'creation_source' => CreationSource::IMPORT,
+                                ]);
+                            }
+                        } catch (\Exception $e) {
+                            $this->logError("Failed to add note for {$companyName}", $e->getMessage(), $record);
                         }
                     }
-                    // 4. Link to Event (Create Participation)
-                    // Extract year from source string (e.g., "CSV: 2019", "Excel: Invest Expo 2019")
-                    $source = $record['source'] ?? '';
-                    preg_match('/\b(20\d{2})\b/', $source, $matches);
-                    $year = $matches[1] ?? null;
 
-                    if ($year) {
-                        $eventName = "Invest Expo $year";
+                    // 4. Events
+                    if (!empty($record['is_exhibitor'])) {
+                        $sourceClean = str_replace(['Excel: ', 'CSV: '], '', $record['source'] ?? '');
+                        $eventName = $this->safeString($sourceClean, 150);
 
-                        // Find or Create Event
+                        preg_match('/\b(20\d{2})\b/', $eventName, $matches);
+                        $year = $matches[1] ?? '2024';
+
                         $event = \App\Models\Event::firstOrCreate(
-                            ['year' => $year],
+                            ['name' => $eventName],
                             [
-                                'name' => $eventName,
-                                'status' => \App\Enums\EventStatus::UPCOMING, // Default status
-                                'start_date' => "$year-01-01", // Placeholder dates
+                                'year' => $year,
+                                'status' => \App\Enums\EventStatus::UPCOMING,
+                                'start_date' => "$year-01-01",
                                 'end_date' => "$year-12-31",
                             ]
                         );
 
-                        // Check if participation already exists
-                        $participationExists = \App\Models\Participation::where('company_id', $company->id)
-                            ->where('event_id', $event->id)
-                            ->exists();
-
-                        if (!$participationExists) {
+                        if (!\App\Models\Participation::where('company_id', $company->id)->where('event_id', $event->id)->exists()) {
                             \App\Models\Participation::create([
                                 'company_id' => $company->id,
                                 'event_id' => $event->id,
-                                'participation_status' => \App\Enums\ParticipationStatus::CONFIRMED, // Assume they participated
-                                'notes' => "Imported from $source",
+                                'participation_status' => \App\Enums\ParticipationStatus::CONFIRMED,
+                                'notes' => "Imported from " . $this->safeString($record['source'] ?? '', 50),
                             ]);
                         }
                     }
 
-                    // 5. Create Opportunity (if marked as such)
-                    if (!empty($record['is_opportunity'])) {
-                        $oppName = "Business Card Import: " . ($companyName ?? $record['person_name'] ?? 'Unknown');
+                    // 5. Opportunities
+                    // Fallback: If logic
+                    if (!empty($record['is_employee_entry']) || empty($record['is_exhibitor'])) {
+                        $oppName = "Lead: " . $companyName;
+                        if (!empty($personName)) {
+                            $oppName .= " - " . $personName;
+                        }
 
-                        // Prevent duplicates
-                        $oppExists = \App\Models\Opportunity::where('company_id', $company->id)
-                            ->where('name', $oppName)
-                            ->exists();
-
-                        if (!$oppExists) {
+                        if (!\App\Models\Opportunity::where('company_id', $company->id)->where('name', $oppName)->exists()) {
                             \App\Models\Opportunity::create([
                                 'name' => $oppName,
                                 'company_id' => $company->id,
@@ -188,10 +202,11 @@ class ImportLegacyDataSeeder extends Seeder
                             ]);
                         }
                     }
+
                 });
             } catch (\Exception $e) {
-                // Log checking
-                // $this->command->error("Failed to import {$companyName}: " . $e->getMessage());
+                File::append(base_path('import_errors.log'), "Failed {$companyName}: " . $e->getMessage() . "\n");
+                $this->command->error("Err: " . $e->getMessage());
             }
 
             $bar->advance();
@@ -199,6 +214,6 @@ class ImportLegacyDataSeeder extends Seeder
 
         $bar->finish();
         $this->command->newLine();
-        $this->command->info("Import completed.");
+        $this->command->info("Import completed. See import_errors.log for details.");
     }
 }

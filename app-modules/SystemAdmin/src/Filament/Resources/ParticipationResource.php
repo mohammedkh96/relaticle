@@ -152,8 +152,13 @@ final class ParticipationResource extends Resource
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('event.name')
+                    ->label('Event')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('company.phone')
+                    ->label('Phone')
+                    ->searchable()
+                    ->toggleable(),
                 TextColumn::make('event.year')
                     ->sortable()
                     ->label('Year'),
