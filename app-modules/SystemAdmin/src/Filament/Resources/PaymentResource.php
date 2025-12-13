@@ -112,6 +112,11 @@ final class PaymentResource extends Resource
                         'payment_id' => $record->id,
                     ])),
             ])
+            ->toolbarActions([
+                \Filament\Actions\ExportAction::make()
+                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\PaymentExporter::class)
+                    ->label('Export'),
+            ])
             ->bulkActions([
                 \Filament\Actions\ExportBulkAction::make()
                     ->exporter(\Relaticle\SystemAdmin\Filament\Exports\PaymentExporter::class),

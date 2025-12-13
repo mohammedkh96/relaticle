@@ -108,11 +108,7 @@ final class EventResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->headerActions([
-                \Filament\Actions\ExportAction::make()
-                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\EventExporter::class)
-                    ->label('Export'),
-            ])
+
             ->filters([
                 \Filament\Tables\Filters\SelectFilter::make('status')
                     ->options(\App\Enums\EventStatus::class)
@@ -128,9 +124,10 @@ final class EventResource extends Resource
             ->toolbarActions([
                 ImportAction::make()
                     ->importer(EventImporter::class),
+                \Filament\Actions\ExportAction::make()
+                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\EventExporter::class)
+                    ->label('Export'),
                 BulkActionGroup::make([
-                    \Filament\Actions\ExportBulkAction::make()
-                        ->exporter(\Relaticle\SystemAdmin\Filament\Exports\EventExporter::class),
                     DeleteBulkAction::make(),
                 ]),
             ])

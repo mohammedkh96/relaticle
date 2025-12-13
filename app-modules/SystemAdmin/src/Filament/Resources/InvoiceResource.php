@@ -123,11 +123,7 @@ final class InvoiceResource extends Resource
                 TextColumn::make('status')->badge()->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
-            ->headerActions([
-                \Filament\Actions\ExportAction::make()
-                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\InvoiceExporter::class)
-                    ->label('Export'),
-            ])
+
             ->filters([
                 \Filament\Tables\Filters\SelectFilter::make('status')
                     ->options(InvoiceStatus::class)
@@ -146,6 +142,11 @@ final class InvoiceResource extends Resource
                     ->icon('heroicon-o-printer')
                     ->url(fn(Invoice $record) => route('invoice.print', $record))
                     ->openUrlInNewTab(),
+            ])
+            ->toolbarActions([
+                \Filament\Actions\ExportAction::make()
+                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\InvoiceExporter::class)
+                    ->label('Export'),
             ])
             ->bulkActions([
                 \Filament\Actions\ExportBulkAction::make()

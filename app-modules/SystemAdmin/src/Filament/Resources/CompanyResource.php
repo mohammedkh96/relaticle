@@ -183,11 +183,7 @@ final class CompanyResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->headerActions([
-                \Filament\Actions\ExportAction::make()
-                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\CompanyExporter::class)
-                    ->label('Export'),
-            ])
+
             ->defaultSort('created_at', 'desc')
             ->filters([
                 SelectFilter::make('creation_source')
@@ -226,6 +222,9 @@ final class CompanyResource extends Resource
             ->toolbarActions([
                 ImportAction::make()
                     ->importer(CompanyImporter::class),
+                \Filament\Actions\ExportAction::make()
+                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\CompanyExporter::class)
+                    ->label('Export'),
                 BulkActionGroup::make([
                     \Filament\Actions\ExportBulkAction::make()
                         ->exporter(\Relaticle\SystemAdmin\Filament\Exports\CompanyExporter::class),

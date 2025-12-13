@@ -109,16 +109,15 @@ final class PeopleResource extends Resource
                     ->options(CreationSource::class)
                     ->multiple(),
             ])
-            ->headerActions([
-                \Filament\Actions\ExportAction::make()
-                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\PeopleExporter::class)
-                    ->label('Export'),
-            ])
+
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
             ])
             ->toolbarActions([
+                \Filament\Actions\ExportAction::make()
+                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\PeopleExporter::class)
+                    ->label('Export'),
                 BulkActionGroup::make([
                     \Filament\Actions\ExportBulkAction::make()
                         ->exporter(\Relaticle\SystemAdmin\Filament\Exports\PeopleExporter::class),

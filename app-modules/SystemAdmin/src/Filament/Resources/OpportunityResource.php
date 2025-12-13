@@ -171,11 +171,7 @@ final class OpportunityResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->headerActions([
-                \Filament\Actions\ExportAction::make()
-                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\OpportunityExporter::class)
-                    ->label('Export'),
-            ])
+
             ->defaultSort('created_at', 'desc')
             ->filters([
                 SelectFilter::make('status')
@@ -204,6 +200,9 @@ final class OpportunityResource extends Resource
                 EditAction::make(),
             ])
             ->toolbarActions([
+                \Filament\Actions\ExportAction::make()
+                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\OpportunityExporter::class)
+                    ->label('Export'),
                 BulkActionGroup::make([
                     \Filament\Actions\ExportBulkAction::make()
                         ->exporter(\Relaticle\SystemAdmin\Filament\Exports\OpportunityExporter::class),

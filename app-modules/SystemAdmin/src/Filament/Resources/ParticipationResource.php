@@ -178,11 +178,7 @@ final class ParticipationResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->headerActions([
-                \Filament\Actions\ExportAction::make()
-                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\ParticipationExporter::class)
-                    ->label('Export'),
-            ])
+
             ->filters([
                 SelectFilter::make('event_id')
                     ->relationship('event', 'name')
@@ -204,6 +200,9 @@ final class ParticipationResource extends Resource
             ->toolbarActions([
                 ImportAction::make()
                     ->importer(ParticipationImporter::class),
+                \Filament\Actions\ExportAction::make()
+                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\ParticipationExporter::class)
+                    ->label('Export'),
                 BulkActionGroup::make([
                     \Filament\Actions\ExportBulkAction::make()
                         ->exporter(\Relaticle\SystemAdmin\Filament\Exports\ParticipationExporter::class),

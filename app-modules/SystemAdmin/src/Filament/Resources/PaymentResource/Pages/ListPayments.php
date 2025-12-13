@@ -12,9 +12,6 @@ class ListPayments extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            \Filament\Actions\ExportAction::make()
-                ->exporter(\Relaticle\SystemAdmin\Filament\Exports\PaymentExporter::class)
-                ->label('Export'),
             \Filament\Actions\CreateAction::make(),
         ];
     }
