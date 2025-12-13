@@ -67,20 +67,18 @@ final class SystemAdministratorForm
                 Section::make('Permissions')
                     ->description('Select granular permissions for each resource.')
                     ->hidden(fn(Get $get): bool => $get('role') === SystemAdministratorRole::SuperAdministrator->value)
+                    ->columns(3)
                     ->schema([
-                        \Filament\Forms\Components\Grid::make(3)
-                            ->schema([
-                                self::makeResourcePermissions('Companies', 'companies'),
-                                self::makeResourcePermissions('People', 'people'),
-                                self::makeResourcePermissions('Invoices', 'invoices'),
-                                self::makeResourcePermissions('Payments', 'payments'),
-                                self::makeResourcePermissions('Events', 'events'),
-                                self::makeResourcePermissions('Opportunities', 'opportunities'),
-                                self::makeResourcePermissions('Tasks', 'tasks'),
-                                self::makeResourcePermissions('Participations', 'participations'),
-                                self::makeResourcePermissions('Notes', 'notes'),
-                                self::makeResourcePermissions('App Users', 'users'),
-                            ]),
+                        self::makeResourcePermissions('Companies', 'companies'),
+                        self::makeResourcePermissions('People', 'people'),
+                        self::makeResourcePermissions('Invoices', 'invoices'),
+                        self::makeResourcePermissions('Payments', 'payments'),
+                        self::makeResourcePermissions('Events', 'events'),
+                        self::makeResourcePermissions('Opportunities', 'opportunities'),
+                        self::makeResourcePermissions('Tasks', 'tasks'),
+                        self::makeResourcePermissions('Participations', 'participations'),
+                        self::makeResourcePermissions('Notes', 'notes'),
+                        self::makeResourcePermissions('App Users', 'users'),
                     ]),
             ]);
     }
