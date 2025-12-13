@@ -33,9 +33,11 @@ final class SystemAdministratorsTable
 
                 TextColumn::make('role')
                     ->badge()
-                    ->formatStateUsing(fn (SystemAdministratorRole $state): string => $state->getLabel())
-                    ->color(fn (SystemAdministratorRole $state): string => match ($state) {
+                    ->formatStateUsing(fn(SystemAdministratorRole $state): string => $state->getLabel())
+                    ->color(fn(SystemAdministratorRole $state): string => match ($state) {
                         SystemAdministratorRole::SuperAdministrator => 'danger',
+                        SystemAdministratorRole::Administrator => 'warning',
+                        SystemAdministratorRole::Viewer => 'gray',
                     }),
 
                 IconColumn::make('email_verified_at')
@@ -58,7 +60,7 @@ final class SystemAdministratorsTable
                 SelectFilter::make('role')
                     ->options(
                         collect(SystemAdministratorRole::cases())
-                            ->mapWithKeys(fn (SystemAdministratorRole $role): array => [
+                            ->mapWithKeys(fn(SystemAdministratorRole $role): array => [
                                 $role->value => $role->getLabel(),
                             ])
                     ),
