@@ -23,27 +23,27 @@ class ParticipationPolicy
 
     public function create(SystemAdministrator $user): bool
     {
-        return $user->role->canCreate();
+        return $user->role->isSuperAdmin() || $user->hasPermission('create_participations');
     }
 
     public function update(SystemAdministrator $user, Participation $participation): bool
     {
-        return $user->role->canEdit();
+        return $user->role->isSuperAdmin() || $user->hasPermission('edit_participations');
     }
 
     public function delete(SystemAdministrator $user, Participation $participation): bool
     {
-        return $user->role->canDelete();
+        return $user->role->isSuperAdmin() || $user->hasPermission('delete_participations');
     }
 
     public function deleteAny(SystemAdministrator $user): bool
     {
-        return $user->role->canDelete();
+        return $user->role->isSuperAdmin() || $user->hasPermission('delete_participations');
     }
 
     public function restore(SystemAdministrator $user, Participation $participation): bool
     {
-        return $user->role->canDelete();
+        return $user->role->isSuperAdmin() || $user->hasPermission('delete_participations');
     }
 
     public function forceDelete(SystemAdministrator $user, Participation $participation): bool

@@ -65,25 +65,42 @@ final class SystemAdministratorForm
                     ->columns(2),
 
                 Section::make('Permissions')
-                    ->description('Select which resources this user can access.')
+                    ->description('Select granular permissions for each resource.')
                     ->hidden(fn(Get $get): bool => $get('role') === SystemAdministratorRole::SuperAdministrator->value)
                     ->schema([
-                        \Filament\Forms\Components\CheckboxList::make('permissions')
-                            ->options([
-                                'view_companies' => 'View Companies',
-                                'view_people' => 'View People',
-                                'view_invoices' => 'View Invoices',
-                                'view_payments' => 'View Payments',
-                                'view_events' => 'View Events',
-                                'view_opportunities' => 'View Opportunities',
-                                'view_tasks' => 'View Tasks',
-                                'view_participations' => 'View Participations',
-                                'view_notes' => 'View Notes',
-                            ])
-                            ->columns(3)
-                            ->gridDirection('row')
-                            ->bulkToggleable(),
+                        \Filament\Forms\Components\Grid::make(3)
+                            ->schema([
+                                self::makeResourcePermissions('Companies', 'companies'),
+                                self::makeResourcePermissions('People', 'people'),
+                                self::makeResourcePermissions('Invoices', 'invoices'),
+                                self::makeResourcePermissions('Payments', 'payments'),
+                                self::makeResourcePermissions('Events', 'events'),
+                                self::makeResourcePermissions('Opportunities', 'opportunities'),
+                                self::makeResourcePermissions('Tasks', 'tasks'),
+                                self::makeResourcePermissions('Participations', 'participations'),
+                                self::makeResourcePermissions('Notes', 'notes'),
+                                self::makeResourcePermissions('App Users', 'users'),
+                            ]),
                     ]),
             ]);
+    }
+
+    private static function makeResourcePermissions(string $label, string $resource): \Filament\Forms\Components\Component
+    {
+        return \Filament\Forms\Components\Section::make($label)
+            ->schema([
+                \Filament\Forms\Components\CheckboxList::make('permissions')
+                    ->hiddenLabel()
+                    ->options([
+                        "view_{$resource}" => 'View',
+                        "create_{$resource}" => 'Create',
+                        "edit_{$resource}" => 'Edit',
+                        "delete_{$resource}" => 'Delete',
+                    ])
+                    ->bulkToggleable()
+                    ->columns(2),
+            ])
+            ->collapsible()
+            ->compact();
     }
 }

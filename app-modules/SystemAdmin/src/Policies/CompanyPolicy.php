@@ -13,34 +13,34 @@ final class CompanyPolicy
         return $admin->role->isSuperAdmin() || $admin->hasPermission('view_companies');
     }
 
-    public function view(): bool
+    public function view(SystemAdministrator $admin, SystemAdministrator $model): bool
     {
-        return true; // All roles can view
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('view_companies');
     }
 
     public function create(SystemAdministrator $admin): bool
     {
-        return $admin->role->canCreate();
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('create_companies');
     }
 
     public function update(SystemAdministrator $admin): bool
     {
-        return $admin->role->canEdit();
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('edit_companies');
     }
 
     public function delete(SystemAdministrator $admin): bool
     {
-        return $admin->role->canDelete();
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('delete_companies');
     }
 
     public function deleteAny(SystemAdministrator $admin): bool
     {
-        return $admin->role->canDelete();
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('delete_companies');
     }
 
     public function restore(SystemAdministrator $admin): bool
     {
-        return $admin->role->canDelete();
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('delete_companies');
     }
 
     public function forceDelete(SystemAdministrator $admin): bool

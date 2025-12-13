@@ -19,27 +19,27 @@ class InvoicePolicy
 
     public function create(SystemAdministrator $user): bool
     {
-        return $user->role->canCreate();
+        return $user->role->isSuperAdmin() || $user->hasPermission('create_invoices');
     }
 
     public function update(SystemAdministrator $user, Invoice $invoice): bool
     {
-        return $user->role->canEdit();
+        return $user->role->isSuperAdmin() || $user->hasPermission('edit_invoices');
     }
 
     public function delete(SystemAdministrator $user, Invoice $invoice): bool
     {
-        return $user->role->canDelete();
+        return $user->role->isSuperAdmin() || $user->hasPermission('delete_invoices');
     }
 
     public function deleteAny(SystemAdministrator $user): bool
     {
-        return $user->role->canDelete();
+        return $user->role->isSuperAdmin() || $user->hasPermission('delete_invoices');
     }
 
     public function restore(SystemAdministrator $user, Invoice $invoice): bool
     {
-        return $user->role->canDelete();
+        return $user->role->isSuperAdmin() || $user->hasPermission('delete_invoices');
     }
 
     public function forceDelete(SystemAdministrator $user, Invoice $invoice): bool

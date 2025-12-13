@@ -13,34 +13,34 @@ final class TaskPolicy
         return $admin->role->isSuperAdmin() || $admin->hasPermission('view_tasks');
     }
 
-    public function view(): bool
+    public function view(SystemAdministrator $admin, SystemAdministrator $model): bool
     {
-        return true;
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('view_tasks');
     }
 
     public function create(SystemAdministrator $admin): bool
     {
-        return $admin->role->canCreate();
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('create_tasks');
     }
 
     public function update(SystemAdministrator $admin): bool
     {
-        return $admin->role->canEdit();
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('edit_tasks');
     }
 
     public function delete(SystemAdministrator $admin): bool
     {
-        return $admin->role->canDelete();
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('delete_tasks');
     }
 
     public function deleteAny(SystemAdministrator $admin): bool
     {
-        return $admin->role->canDelete();
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('delete_tasks');
     }
 
     public function restore(SystemAdministrator $admin): bool
     {
-        return $admin->role->canDelete();
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('delete_tasks');
     }
 
     public function forceDelete(SystemAdministrator $admin): bool

@@ -8,39 +8,39 @@ use Relaticle\SystemAdmin\Models\SystemAdministrator;
 
 final class UserPolicy
 {
-    public function viewAny(): bool
+    public function viewAny(SystemAdministrator $admin): bool
     {
-        return true;
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('view_users');
     }
 
-    public function view(): bool
+    public function view(SystemAdministrator $admin, SystemAdministrator $model): bool
     {
-        return true;
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('view_users');
     }
 
     public function create(SystemAdministrator $admin): bool
     {
-        return $admin->role->canCreate();
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('create_users');
     }
 
     public function update(SystemAdministrator $admin): bool
     {
-        return $admin->role->canEdit();
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('edit_users');
     }
 
     public function delete(SystemAdministrator $admin): bool
     {
-        return $admin->role->canDelete();
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('delete_users');
     }
 
     public function deleteAny(SystemAdministrator $admin): bool
     {
-        return $admin->role->canDelete();
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('delete_users');
     }
 
     public function restore(SystemAdministrator $admin): bool
     {
-        return $admin->role->canDelete();
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('delete_users');
     }
 
     public function forceDelete(SystemAdministrator $admin): bool

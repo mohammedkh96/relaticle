@@ -30,10 +30,19 @@ final class Dashboard extends BaseDashboard
 
     public function getWidgets(): array
     {
+        /** @var \Relaticle\SystemAdmin\Models\SystemAdministrator $user */
+        $user = auth()->user();
+
+        if ($user && ($user->role->isSuperAdmin() || $user->role === \Relaticle\SystemAdmin\Enums\SystemAdministratorRole::Administrator)) {
+            return [
+                \Relaticle\SystemAdmin\Filament\Widgets\DashboardStatsWidget::class,
+                \Relaticle\SystemAdmin\Filament\Widgets\RevenueChartWidget::class,
+                \Relaticle\SystemAdmin\Filament\Widgets\LatestInvoicesWidget::class,
+            ];
+        }
+
         return [
-            \Relaticle\SystemAdmin\Filament\Widgets\DashboardStatsWidget::class,
-            \Relaticle\SystemAdmin\Filament\Widgets\RevenueChartWidget::class,
-            \Relaticle\SystemAdmin\Filament\Widgets\LatestInvoicesWidget::class,
+            \Relaticle\SystemAdmin\Filament\Widgets\QuickActionsWidget::class,
         ];
     }
 }
