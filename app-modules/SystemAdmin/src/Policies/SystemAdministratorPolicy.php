@@ -9,14 +9,14 @@ use Relaticle\SystemAdmin\Models\SystemAdministrator;
 
 final class SystemAdministratorPolicy
 {
-    public function viewAny(): bool
+    public function viewAny(SystemAdministrator $admin): bool
     {
-        return true;
+        return $admin->role->canManageAdmins();
     }
 
-    public function view(): bool
+    public function view(SystemAdministrator $admin, SystemAdministrator $systemAdmin): bool
     {
-        return true;
+        return $admin->role->canManageAdmins() || $admin->id === $systemAdmin->id;
     }
 
     public function create(SystemAdministrator $admin): Response
