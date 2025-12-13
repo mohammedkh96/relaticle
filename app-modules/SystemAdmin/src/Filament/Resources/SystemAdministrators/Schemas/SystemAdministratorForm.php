@@ -85,7 +85,7 @@ final class SystemAdministratorForm
 
     private static function makeResourcePermissions(string $label, string $resource): \Filament\Forms\Components\Component
     {
-        return \Filament\Forms\Components\Section::make($label)
+        return Section::make($label)
             ->schema([
                 \Filament\Forms\Components\CheckboxList::make('permissions')
                     ->hiddenLabel()
