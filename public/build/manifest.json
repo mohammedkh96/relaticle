@@ -1,0 +1,46 @@
+{
+  "app-modules/Documentation/resources/css/documentation.css": {
+    "file": "assets/documentation-CJNecPYO.css",
+    "src": "app-modules/Documentation/resources/css/documentation.css",
+    "isEntry": true,
+    "names": [
+      "documentation.css"
+    ]
+  },
+  "app-modules/Documentation/resources/js/documentation.js": {
+    "file": "assets/documentation-k9MxfM2R.js",
+    "name": "documentation",
+    "src": "app-modules/Documentation/resources/js/documentation.js",
+    "isEntry": true
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-DrJNiECy.css",
+    "src": "resources/css/app.css",
+    "isEntry": true,
+    "names": [
+      "app.css"
+    ]
+  },
+  "resources/css/filament/admin/theme.css": {
+    "file": "assets/theme-CJ8NWasb.css",
+    "src": "resources/css/filament/admin/theme.css",
+    "isEntry": true,
+    "names": [
+      "theme.css"
+    ]
+  },
+  "resources/css/filament/app/theme.css": {
+    "file": "assets/theme-DFz4IpRS.css",
+    "src": "resources/css/filament/app/theme.css",
+    "isEntry": true,
+    "names": [
+      "theme.css"
+    ]
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-l0sNRNKZ.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  }
+}
