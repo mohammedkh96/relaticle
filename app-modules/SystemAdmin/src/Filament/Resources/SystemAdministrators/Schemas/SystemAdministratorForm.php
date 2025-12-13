@@ -35,7 +35,7 @@ final class SystemAdministratorForm
                         Select::make('role')
                             ->options(
                                 collect(SystemAdministratorRole::cases())
-                                    ->mapWithKeys(fn (SystemAdministratorRole $role): array => [
+                                    ->mapWithKeys(fn(SystemAdministratorRole $role): array => [
                                         $role->value => $role->getLabel(),
                                     ])
                             )
@@ -49,17 +49,17 @@ final class SystemAdministratorForm
 
                         TextInput::make('password')
                             ->password()
-                            ->dehydrateStateUsing(fn (?string $state): ?string => in_array($state, [null, '', '0'], true) ? null : Hash::make($state))
-                            ->dehydrated(filled(...))
-                            ->required(fn (Get $get): bool => ! $get('id'))
+                            ->dehydrateStateUsing(fn($state) => Hash::make($state))
+                            ->dehydrated(fn($state) => filled($state))
+                            ->required(fn(string $context): bool => $context === 'create')
                             ->maxLength(255)
                             ->confirmed()
-                            ->helperText(fn (Get $get): ?string => $get('id') ? 'Leave blank to keep current password' : null),
+                            ->helperText(fn(string $context): ?string => $context === 'edit' ? 'Leave blank to keep current password' : null),
 
                         TextInput::make('password_confirmation')
                             ->password()
                             ->dehydrated(false)
-                            ->required(fn (Get $get): bool => ! $get('id') && filled($get('password')))
+                            ->required(fn(string $context, Get $get): bool => $context === 'create' || filled($get('password')))
                             ->maxLength(255),
                     ])
                     ->columns(2),
