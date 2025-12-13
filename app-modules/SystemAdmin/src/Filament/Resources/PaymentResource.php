@@ -117,13 +117,13 @@ final class PaymentResource extends Resource
                 \Filament\Actions\ExportAction::make()
                     ->exporter(\Relaticle\SystemAdmin\Filament\Exports\PaymentExporter::class)
                     ->label('Export'),
-            ])
-            ->bulkActions([
-                \Filament\Actions\ExportBulkAction::make()
-                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\PaymentExporter::class),
-                BulkEmailAction::make(),
-                BulkWhatsAppAction::make(),
-                \Filament\Actions\DeleteBulkAction::make(),
+                \Filament\Actions\BulkActionGroup::make([
+                    \Filament\Actions\ExportBulkAction::make()
+                        ->exporter(\Relaticle\SystemAdmin\Filament\Exports\PaymentExporter::class),
+                    BulkEmailAction::make(),
+                    BulkWhatsAppAction::make(),
+                    \Filament\Actions\DeleteBulkAction::make(),
+                ]),
             ]);
     }
 

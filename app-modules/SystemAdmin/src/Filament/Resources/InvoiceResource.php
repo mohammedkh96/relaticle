@@ -148,13 +148,13 @@ final class InvoiceResource extends Resource
                 \Filament\Actions\ExportAction::make()
                     ->exporter(\Relaticle\SystemAdmin\Filament\Exports\InvoiceExporter::class)
                     ->label('Export'),
-            ])
-            ->bulkActions([
-                \Filament\Actions\ExportBulkAction::make()
-                    ->exporter(\Relaticle\SystemAdmin\Filament\Exports\InvoiceExporter::class),
-                BulkEmailAction::make(),
-                BulkWhatsAppAction::make(),
-                \Filament\Actions\DeleteBulkAction::make(),
+                \Filament\Actions\BulkActionGroup::make([
+                    \Filament\Actions\ExportBulkAction::make()
+                        ->exporter(\Relaticle\SystemAdmin\Filament\Exports\InvoiceExporter::class),
+                    BulkEmailAction::make(),
+                    BulkWhatsAppAction::make(),
+                    \Filament\Actions\DeleteBulkAction::make(),
+                ]),
             ]);
     }
 
