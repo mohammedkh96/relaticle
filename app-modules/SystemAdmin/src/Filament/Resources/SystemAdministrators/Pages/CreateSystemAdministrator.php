@@ -32,4 +32,25 @@ final class CreateSystemAdministrator extends CreateRecord
     {
         return $this->getResource()::getUrl('index');
     }
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $permissions = [];
+        $resources = \Relaticle\SystemAdmin\Models\SystemAdministrator::getManageableResources();
+
+        foreach ($resources as $resourceKey => $label) {
+            $field = "permissions_{$resourceKey}";
+            if (isset($data[$field])) {
+                $permissions = array_merge($permissions, $data[$field]);
+                unset($data[$field]);
+            }
+        }
+
+        if ($data['role'] !== \Relaticle\SystemAdmin\Enums\SystemAdministratorRole::SuperAdministrator->value) {
+            $data['permissions'] = $permissions;
+        } else {
+            $data['permissions'] = null;
+        }
+
+        return $data;
+    }
 }

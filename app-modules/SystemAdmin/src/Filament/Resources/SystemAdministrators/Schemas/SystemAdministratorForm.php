@@ -68,18 +68,12 @@ final class SystemAdministratorForm
                     ->description('Select granular permissions for each resource.')
                     ->hidden(fn(Get $get): bool => $get('role') === SystemAdministratorRole::SuperAdministrator->value)
                     ->columns(3)
-                    ->schema([
-                        self::makeResourcePermissions('Companies', 'companies'),
-                        self::makeResourcePermissions('People', 'people'),
-                        self::makeResourcePermissions('Invoices', 'invoices'),
-                        self::makeResourcePermissions('Payments', 'payments'),
-                        self::makeResourcePermissions('Events', 'events'),
-                        self::makeResourcePermissions('Opportunities', 'opportunities'),
-                        self::makeResourcePermissions('Tasks', 'tasks'),
-                        self::makeResourcePermissions('Participations', 'participations'),
-                        self::makeResourcePermissions('Notes', 'notes'),
-                        self::makeResourcePermissions('App Users', 'users'),
-                    ]),
+                    ->schema(
+                        collect(\Relaticle\SystemAdmin\Models\SystemAdministrator::getManageableResources())
+                            ->map(fn(string $label, string $resource): \Filament\Schemas\Components\Component => self::makeResourcePermissions($label, $resource))
+                            ->values()
+                            ->all()
+                    ),
             ]);
     }
 
@@ -87,7 +81,7 @@ final class SystemAdministratorForm
     {
         return Section::make($label)
             ->schema([
-                \Filament\Forms\Components\CheckboxList::make('permissions')
+                \Filament\Forms\Components\CheckboxList::make("permissions_{$resource}")
                     ->hiddenLabel()
                     ->options([
                         "view_{$resource}" => 'View',
@@ -96,7 +90,16 @@ final class SystemAdministratorForm
                         "delete_{$resource}" => 'Delete',
                     ])
                     ->bulkToggleable()
-                    ->columns(2),
+                    ->columns(2)
+                    ->afterStateHydrated(function (\Filament\Forms\Components\CheckboxList $component, ?\Relaticle\SystemAdmin\Models\SystemAdministrator $record) {
+                        if (!$record) {
+                            return;
+                        }
+
+                        $permissions = $record->permissions ?? [];
+                        $component->state($permissions);
+                    })
+                    ->dehydrated(true),
             ])
             ->collapsible()
             ->compact();

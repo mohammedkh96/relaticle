@@ -102,6 +102,27 @@ final class SystemAdministrator extends Authenticatable implements FilamentUser,
     }
 
     /**
+     * Get the list of manageable resources for permissions.
+     *
+     * @return array<string, string>
+     */
+    public static function getManageableResources(): array
+    {
+        return [
+            'companies' => 'Companies',
+            'people' => 'People',
+            'invoices' => 'Invoices',
+            'payments' => 'Payments',
+            'events' => 'Events',
+            'opportunities' => 'Opportunities',
+            'tasks' => 'Tasks',
+            'participations' => 'Participations',
+            'notes' => 'Notes',
+            'users' => 'App Users',
+        ];
+    }
+
+    /**
      * Create a new factory instance for the model.
      */
     protected static function newFactory(): SystemAdministratorFactory
