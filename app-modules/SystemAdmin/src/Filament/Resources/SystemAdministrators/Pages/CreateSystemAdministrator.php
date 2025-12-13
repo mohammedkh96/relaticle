@@ -15,7 +15,7 @@ final class CreateSystemAdministrator extends CreateRecord
     protected function getFormActions(): array
     {
         return [
-            $this->getCreateAction(),
+            $this->getCreateFormAction(),
             $this->getCancelAction(),
         ];
     }
