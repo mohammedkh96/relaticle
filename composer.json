@@ -18,6 +18,7 @@
         "awcodes/overlook": "^v3.0",
         "blade-ui-kit/blade-heroicons": "^2.6",
         "blade-ui-kit/blade-icons": "^1.8",
+        "fakerphp/faker": "^1.23",
         "filament/filament": "^4.0",
         "laravel/framework": "^12.0",
         "laravel/horizon": "^5.29",
@@ -46,7 +47,6 @@
     "require-dev": {
         "cweagans/composer-patches": "*",
         "driftingly/rector-laravel": "^2.0",
-        "fakerphp/faker": "^1.23",
         "itsgoingd/clockwork": "^5.3",
         "larastan/larastan": "^3.0",
         "laravel/boost": "^1.0",
