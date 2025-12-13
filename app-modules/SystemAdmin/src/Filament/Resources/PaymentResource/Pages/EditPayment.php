@@ -8,4 +8,9 @@ use Relaticle\SystemAdmin\Filament\Resources\PaymentResource;
 class EditPayment extends EditRecord
 {
     protected static string $resource = PaymentResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
