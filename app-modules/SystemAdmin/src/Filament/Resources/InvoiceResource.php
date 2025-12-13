@@ -123,6 +123,7 @@ final class InvoiceResource extends Resource
                 TextColumn::make('status')->badge()->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
+            ->deferLoading()
 
             ->filters([
                 \Filament\Tables\Filters\SelectFilter::make('status')

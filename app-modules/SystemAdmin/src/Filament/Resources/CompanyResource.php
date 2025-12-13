@@ -185,6 +185,7 @@ final class CompanyResource extends Resource
             ])
 
             ->defaultSort('created_at', 'desc')
+            ->deferLoading()
             ->filters([
                 SelectFilter::make('creation_source')
                     ->label('Creation Source')

@@ -103,6 +103,7 @@ final class PeopleResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('created_at', 'desc')
+            ->deferLoading()
             ->filters([
                 SelectFilter::make('creation_source')
                     ->label('Creation Source')

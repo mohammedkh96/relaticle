@@ -131,7 +131,8 @@ final class EventResource extends Resource
                     DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('year', 'desc');
+            ->defaultSort('year', 'desc')
+            ->deferLoading();
     }
 
     #[Override]

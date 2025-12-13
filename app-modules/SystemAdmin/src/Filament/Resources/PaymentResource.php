@@ -85,6 +85,7 @@ final class PaymentResource extends Resource
                 TextColumn::make('payment_date')->date()->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
+            ->deferLoading()
 
             ->filters([
                 \Filament\Tables\Filters\SelectFilter::make('status')

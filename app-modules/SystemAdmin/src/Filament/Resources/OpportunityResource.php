@@ -173,6 +173,7 @@ final class OpportunityResource extends Resource
             ])
 
             ->defaultSort('created_at', 'desc')
+            ->deferLoading()
             ->filters([
                 SelectFilter::make('status')
                     ->options(\App\Enums\OpportunityStatus::class)

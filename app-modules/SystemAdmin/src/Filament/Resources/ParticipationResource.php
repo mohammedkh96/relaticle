@@ -211,7 +211,8 @@ final class ParticipationResource extends Resource
                     DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('created_at', 'desc');
+            ->defaultSort('created_at', 'desc')
+            ->deferLoading();
     }
 
     #[Override]
