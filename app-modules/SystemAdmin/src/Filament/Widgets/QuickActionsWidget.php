@@ -9,7 +9,7 @@ use Relaticle\SystemAdmin\Models\SystemAdministrator;
 
 class QuickActionsWidget extends Widget
 {
-    protected static string $view = 'system-admin::widgets.quick-actions-widget';
+    protected string $view = 'system-admin::widgets.quick-actions-widget';
 
     protected int|string|array $columnSpan = 'full';
 
