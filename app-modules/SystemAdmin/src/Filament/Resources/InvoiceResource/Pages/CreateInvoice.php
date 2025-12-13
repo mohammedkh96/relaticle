@@ -25,6 +25,17 @@ class CreateInvoice extends CreateRecord
                     ? $payment->payment_date
                     : \Carbon\Carbon::parse($payment->payment_date);
 
+                $eventName = $payment->participation->event->name;
+                $startDate = \Carbon\Carbon::parse($payment->participation->event->start_date)->format('d M Y');
+                $endDate = \Carbon\Carbon::parse($payment->participation->event->end_date)->format('d M Y');
+                $standNo = $payment->participation->stand_number;
+                $paymentType = ucfirst($payment->type->value ?? $payment->type); // Handle Enum or String
+
+                $description = "Participating in {$eventName}\n";
+                $description .= "{$startDate} to {$endDate}\n";
+                $description .= "Stand No: {$standNo}\n";
+                $description .= "{$paymentType} Payment";
+
                 $data = [
                     'event_id' => $payment->event_id,
                     'participation_id' => $payment->participation_id,
@@ -33,7 +44,7 @@ class CreateInvoice extends CreateRecord
                     'due_date' => $paymentDate->addDays(14)->format('Y-m-d'),
                     'total_amount' => $payment->amount,
                     'status' => \App\Enums\InvoiceStatus::SENT,
-                    'simple_description' => "Exhibition Space Rental and Participation Fees\nEvent: {$payment->participation->event->name}\nDesignated Stand: {$payment->participation->stand_number}\n\n(Payment Ref: {$payment->transaction_ref})",
+                    'simple_description' => $description,
                     'notes' => "Linked to Payment #{$payment->id}",
                 ];
 
