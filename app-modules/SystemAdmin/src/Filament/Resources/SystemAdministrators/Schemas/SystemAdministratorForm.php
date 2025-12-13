@@ -83,7 +83,7 @@ final class SystemAdministratorForm
             ]);
     }
 
-    private static function makeResourcePermissions(string $label, string $resource): \Filament\Forms\Components\Component
+    private static function makeResourcePermissions(string $label, string $resource): \Filament\Schemas\Components\Component
     {
         return Section::make($label)
             ->schema([
