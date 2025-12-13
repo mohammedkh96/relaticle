@@ -27,4 +27,9 @@ final class CreateSystemAdministrator extends CreateRecord
             ->url($this->getResource()::getUrl('index'))
             ->color('gray');
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
