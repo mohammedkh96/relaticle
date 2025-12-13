@@ -5,47 +5,49 @@ namespace App\Policies;
 use App\Models\Participation;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
+use Relaticle\SystemAdmin\Models\SystemAdministrator;
+
 class ParticipationPolicy
 {
     use HandlesAuthorization;
 
-    public function viewAny($user): bool
+    public function viewAny(SystemAdministrator $user): bool
     {
-        return true;
+        return $user->role->isSuperAdmin() || $user->hasPermission('view_participations');
     }
 
-    public function view($user, Participation $participation): bool
+    public function view(SystemAdministrator $user, Participation $participation): bool
     {
-        return true;
+        return $user->role->isSuperAdmin() || $user->hasPermission('view_participations');
     }
 
-    public function create($user): bool
+    public function create(SystemAdministrator $user): bool
     {
-        return true;
+        return $user->role->canCreate();
     }
 
-    public function update($user, Participation $participation): bool
+    public function update(SystemAdministrator $user, Participation $participation): bool
     {
-        return true;
+        return $user->role->canEdit();
     }
 
-    public function delete($user, Participation $participation): bool
+    public function delete(SystemAdministrator $user, Participation $participation): bool
     {
-        return true;
+        return $user->role->canDelete();
     }
 
-    public function deleteAny($user): bool
+    public function deleteAny(SystemAdministrator $user): bool
     {
-        return true;
+        return $user->role->canDelete();
     }
 
-    public function restore($user, Participation $participation): bool
+    public function restore(SystemAdministrator $user, Participation $participation): bool
     {
-        return true;
+        return $user->role->canDelete();
     }
 
-    public function forceDelete($user, Participation $participation): bool
+    public function forceDelete(SystemAdministrator $user, Participation $participation): bool
     {
-        return true;
+        return $user->role->isSuperAdmin();
     }
 }

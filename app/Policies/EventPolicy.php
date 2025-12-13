@@ -11,43 +11,43 @@ class EventPolicy
 {
     use HandlesAuthorization;
 
-    public function viewAny($user): bool
+    public function viewAny(SystemAdministrator $user): bool
     {
-        return true;
+        return $user->role->isSuperAdmin() || $user->hasPermission('view_events');
     }
 
-    public function view($user, Event $event): bool
+    public function view(SystemAdministrator $user, Event $event): bool
     {
-        return true;
+        return $user->role->isSuperAdmin() || $user->hasPermission('view_events');
     }
 
-    public function create($user): bool
+    public function create(SystemAdministrator $user): bool
     {
-        return true;
+        return $user->role->canCreate();
     }
 
-    public function update($user, Event $event): bool
+    public function update(SystemAdministrator $user, Event $event): bool
     {
-        return true;
+        return $user->role->canEdit();
     }
 
-    public function delete($user, Event $event): bool
+    public function delete(SystemAdministrator $user, Event $event): bool
     {
-        return true;
+        return $user->role->canDelete();
     }
 
-    public function deleteAny($user): bool
+    public function deleteAny(SystemAdministrator $user): bool
     {
-        return true;
+        return $user->role->canDelete();
     }
 
-    public function restore($user, Event $event): bool
+    public function restore(SystemAdministrator $user, Event $event): bool
     {
-        return true;
+        return $user->role->canDelete();
     }
 
-    public function forceDelete($user, Event $event): bool
+    public function forceDelete(SystemAdministrator $user, Event $event): bool
     {
-        return true;
+        return $user->role->isSuperAdmin();
     }
 }

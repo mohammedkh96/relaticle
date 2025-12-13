@@ -8,9 +8,9 @@ use Relaticle\SystemAdmin\Models\SystemAdministrator;
 
 final class TaskPolicy
 {
-    public function viewAny(): bool
+    public function viewAny(SystemAdministrator $admin): bool
     {
-        return true;
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('view_tasks');
     }
 
     public function view(): bool

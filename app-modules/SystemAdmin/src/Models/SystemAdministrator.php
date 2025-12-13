@@ -49,6 +49,7 @@ final class SystemAdministrator extends Authenticatable implements FilamentUser,
         'email',
         'password',
         'role',
+        'permissions',
     ];
 
     /**
@@ -72,7 +73,19 @@ final class SystemAdministrator extends Authenticatable implements FilamentUser,
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'role' => SystemAdministratorRole::class,
+            'permissions' => 'array',
         ];
+    }
+
+    public function hasPermission(string $permission): bool
+    {
+        if ($this->role === SystemAdministratorRole::SuperAdministrator) {
+            return true;
+        }
+
+        $permissions = $this->permissions ?? [];
+
+        return in_array($permission, $permissions, true);
     }
 
     /**

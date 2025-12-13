@@ -63,6 +63,27 @@ final class SystemAdministratorForm
                             ->maxLength(255),
                     ])
                     ->columns(2),
+
+                Section::make('Permissions')
+                    ->description('Select which resources this user can access.')
+                    ->hidden(fn(Get $get): bool => $get('role') === SystemAdministratorRole::SuperAdministrator->value)
+                    ->schema([
+                        \Filament\Forms\Components\CheckboxList::make('permissions')
+                            ->options([
+                                'view_companies' => 'View Companies',
+                                'view_people' => 'View People',
+                                'view_invoices' => 'View Invoices',
+                                'view_payments' => 'View Payments',
+                                'view_events' => 'View Events',
+                                'view_opportunities' => 'View Opportunities',
+                                'view_tasks' => 'View Tasks',
+                                'view_participations' => 'View Participations',
+                                'view_notes' => 'View Notes',
+                            ])
+                            ->columns(3)
+                            ->gridDirection('row')
+                            ->bulkToggleable(),
+                    ]),
             ]);
     }
 }

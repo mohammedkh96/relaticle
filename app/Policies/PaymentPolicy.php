@@ -3,47 +3,47 @@
 namespace App\Policies;
 
 use App\Models\Payment;
-use Illuminate\Foundation\Auth\User;
+use Relaticle\SystemAdmin\Models\SystemAdministrator;
 
 class PaymentPolicy
 {
-    public function viewAny(?User $user): bool
+    public function viewAny(SystemAdministrator $user): bool
     {
-        return true;
+        return $user->role->isSuperAdmin() || $user->hasPermission('view_payments');
     }
 
-    public function view(?User $user, Payment $payment): bool
+    public function view(SystemAdministrator $user, Payment $payment): bool
     {
-        return true;
+        return $user->role->isSuperAdmin() || $user->hasPermission('view_payments');
     }
 
-    public function create(?User $user): bool
+    public function create(SystemAdministrator $user): bool
     {
-        return true;
+        return $user->role->canCreate();
     }
 
-    public function update(?User $user, Payment $payment): bool
+    public function update(SystemAdministrator $user, Payment $payment): bool
     {
-        return true;
+        return $user->role->canEdit();
     }
 
-    public function delete(?User $user, Payment $payment): bool
+    public function delete(SystemAdministrator $user, Payment $payment): bool
     {
-        return true;
+        return $user->role->canDelete();
     }
 
-    public function deleteAny(?User $user): bool
+    public function deleteAny(SystemAdministrator $user): bool
     {
-        return true;
+        return $user->role->canDelete();
     }
 
-    public function restore(?User $user, Payment $payment): bool
+    public function restore(SystemAdministrator $user, Payment $payment): bool
     {
-        return true;
+        return $user->role->canDelete();
     }
 
-    public function forceDelete(?User $user, Payment $payment): bool
+    public function forceDelete(SystemAdministrator $user, Payment $payment): bool
     {
-        return true;
+        return $user->role->isSuperAdmin();
     }
 }

@@ -3,47 +3,47 @@
 namespace App\Policies;
 
 use App\Models\Invoice;
-use Illuminate\Foundation\Auth\User;
+use Relaticle\SystemAdmin\Models\SystemAdministrator;
 
 class InvoicePolicy
 {
-    public function viewAny(?User $user): bool
+    public function viewAny(SystemAdministrator $user): bool
     {
-        return true;
+        return $user->role->isSuperAdmin() || $user->hasPermission('view_invoices');
     }
 
-    public function view(?User $user, Invoice $invoice): bool
+    public function view(SystemAdministrator $user, Invoice $invoice): bool
     {
-        return true;
+        return $user->role->isSuperAdmin() || $user->hasPermission('view_invoices');
     }
 
-    public function create(?User $user): bool
+    public function create(SystemAdministrator $user): bool
     {
-        return true;
+        return $user->role->canCreate();
     }
 
-    public function update(?User $user, Invoice $invoice): bool
+    public function update(SystemAdministrator $user, Invoice $invoice): bool
     {
-        return true;
+        return $user->role->canEdit();
     }
 
-    public function delete(?User $user, Invoice $invoice): bool
+    public function delete(SystemAdministrator $user, Invoice $invoice): bool
     {
-        return true;
+        return $user->role->canDelete();
     }
 
-    public function deleteAny(?User $user): bool
+    public function deleteAny(SystemAdministrator $user): bool
     {
-        return true;
+        return $user->role->canDelete();
     }
 
-    public function restore(?User $user, Invoice $invoice): bool
+    public function restore(SystemAdministrator $user, Invoice $invoice): bool
     {
-        return true;
+        return $user->role->canDelete();
     }
 
-    public function forceDelete(?User $user, Invoice $invoice): bool
+    public function forceDelete(SystemAdministrator $user, Invoice $invoice): bool
     {
-        return true;
+        return $user->role->isSuperAdmin();
     }
 }

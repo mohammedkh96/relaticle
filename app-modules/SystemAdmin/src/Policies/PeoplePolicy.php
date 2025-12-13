@@ -8,9 +8,9 @@ use Relaticle\SystemAdmin\Models\SystemAdministrator;
 
 final class PeoplePolicy
 {
-    public function viewAny(): bool
+    public function viewAny(SystemAdministrator $admin): bool
     {
-        return true;
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('view_people');
     }
 
     public function view(): bool

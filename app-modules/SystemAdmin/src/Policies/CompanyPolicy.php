@@ -8,9 +8,9 @@ use Relaticle\SystemAdmin\Models\SystemAdministrator;
 
 final class CompanyPolicy
 {
-    public function viewAny(): bool
+    public function viewAny(SystemAdministrator $admin): bool
     {
-        return true; // All roles can view
+        return $admin->role->isSuperAdmin() || $admin->hasPermission('view_companies');
     }
 
     public function view(): bool
