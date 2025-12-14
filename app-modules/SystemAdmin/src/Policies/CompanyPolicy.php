@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Relaticle\SystemAdmin\Policies;
 
 use Relaticle\SystemAdmin\Models\SystemAdministrator;
+use App\Models\Company;
 
 final class CompanyPolicy
 {
@@ -13,7 +14,7 @@ final class CompanyPolicy
         return $admin->role->isSuperAdmin() || $admin->hasPermission('view_companies');
     }
 
-    public function view(SystemAdministrator $admin, SystemAdministrator $model): bool
+    public function view(SystemAdministrator $admin, Company $model): bool
     {
         return $admin->role->isSuperAdmin() || $admin->hasPermission('view_companies');
     }
